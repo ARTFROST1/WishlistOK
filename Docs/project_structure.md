@@ -42,33 +42,72 @@ backend/
 │   ├── controllers/
 │   │   ├── api/
 │   │   │   └── v1/
-│   │   └── public/
+│   │   │       ├── auth/
+│   │   │       │   ├── guests_controller.rb      # Guest Lite Mode
+│   │   │       │   ├── registrations_controller.rb
+│   │   │       │   └── sessions_controller.rb
+│   │   │       ├── base_controller.rb
+│   │   │       ├── claims_controller.rb          # Claim system
+│   │   │       ├── health_controller.rb
+│   │   │       ├── ideas_controller.rb           # Curated collections
+│   │   │       ├── wishes_controller.rb          # Wish CRUD + parsing
+│   │   │       └── wishlists_controller.rb       # Wishlist CRUD
+│   │   ├── public/
+│   │   │   └── wishlists_controller.rb           # SSR for /p/:slug
+│   │   ├── application_controller.rb
+│   │   └── concerns/
+│   ├── jobs/
+│   │   └── parse_wish_job.rb                     # Background URL parsing
 │   ├── models/
+│   │   ├── application_record.rb
+│   │   ├── claim.rb                              # Claim system model
+│   │   ├── guest.rb                              # Guest Lite Mode model
+│   │   ├── jwt_denylist.rb                       # JWT security
+│   │   ├── user.rb                               # User + guest logic
+│   │   ├── wish.rb                               # Wish model with parsing
+│   │   └── wishlist.rb                           # Wishlist with privacy
+│   ├── serializers/
+│   │   ├── claim_serializer.rb                   # Claim JSON responses
+│   │   ├── guest_serializer.rb                   # Guest data serialization
+│   │   ├── user_serializer.rb                    # User data serialization
+│   │   ├── wish_serializer.rb                    # Wish with permissions
+│   │   └── wishlist_serializer.rb                # Wishlist with metadata
+│   ├── services/
+│   │   └── wish_parser_service.rb                # OG data parsing service
 │   ├── views/
-│   │   └── public/           # SSR templates for SEO pages
-│   ├── jobs/                 # ActiveJob wrappers (Sidekiq adapter)
-│   ├── workers/              # Sidekiq workers (parse, images, mailers)
-│   ├── services/             # PORO services (parsing, storage, payments)
-│   ├── serializers/          # JSON serializers (if used)
-│   └── helpers/
+│   │   ├── layouts/
+│   │   │   └── public.html.erb                   # SSR layout with SEO
+│   │   └── public/
+│   │       └── wishlists/
+│   │           └── show.html.erb                 # Public wishlist page
+│   ├── helpers/
+│   └── workers/              # (Reserved for future Sidekiq workers)
 ├── config/
 │   ├── environments/
 │   ├── initializers/
-│   ├── credentials.yml.enc   # or rails credentials per env
+│   ├── application.rb
 │   ├── database.yml
-│   └── routes.rb
+│   └── routes.rb             # Complete API + SSR routes
 ├── db/
-│   ├── migrate/
-│   └── schema.rb
-├── spec/                     # rspec-rails tests
+│   └── migrate/
+│       ├── 20251112000001_devise_create_users.rb
+│       ├── 20251112000002_create_jwt_denylist.rb
+│       ├── 20251113000003_create_wishlists.rb    # Wishlist schema
+│       ├── 20251113000004_create_wishes.rb       # Wish schema
+│       ├── 20251113000005_create_claims.rb       # Claim schema
+│       └── 20251113000006_create_guests.rb       # Guest schema
+├── spec/                     # (Reserved for RSpec tests)
 ├── lib/
-├── Gemfile
+├── Gemfile                   # Complete with all dependencies
 ├── Gemfile.lock
-├── .ruby-version             # e.g., 3.3.x
+├── .ruby-version             # 3.3.6
 ├── .rubocop.yml
 ├── .rspec
-├── Procfile.dev              # foreman/overmind dev processes (puma, sidekiq)
-└── .env.example              # local env template
+├── Procfile.dev
+├── .env                      # Local environment
+├── .env.example
+├── Rakefile
+└── config.ru
 ```
 
 - **Controllers**: `api/v1` (JSON), `public` (SSR pages for SEO).
@@ -200,13 +239,21 @@ infra/
 
 ```
 Docs/
-├── Implementation.md
-├── project_structure.md
-└── UI_UX_doc.md
+├── AppMap_WishApp.md          # UX/Architecture specification
+├── Bug_tracking.md            # Implementation status & known issues
+├── Implementation.md          # Implementation plan, stages, dependencies
+├── PRD_WishApp.md            # Product Requirements Document
+├── project_structure.md      # This file - project structure
+├── tech_stack_WishApp.md     # Tech stack & version policy
+└── UI_UX_doc.md              # Design system, flows, accessibility
 ```
 
 - `Implementation.md`: Implementation plan, stages, dependencies, resource links.
 - `UI_UX_doc.md`: Design system, flows, accessibility, responsive rules.
+- `Bug_tracking.md`: **NEW** - Implementation status, known issues, and deployment notes.
+- `AppMap_WishApp.md`: Complete UX/Architecture specification.
+- `PRD_WishApp.md`: Product Requirements Document with MVP scope.
+- `tech_stack_WishApp.md`: Technology stack with pinned versions and compatibility policy.
 
 ---
 
@@ -250,7 +297,37 @@ Docs/
 
 ---
 
-## Notes
+## Implementation Notes (Stage 2 Complete)
+
+### ✅ Completed Features
+- **Domain Models**: User, Wishlist, Wish, Claim, Guest with full business logic
+- **Authentication**: Devise+JWT with Guest Lite Mode auto-provisioning
+- **APIs**: Complete CRUD for wishlists, wishes, claims with proper authorization
+- **URL Parsing**: WishParserService with comprehensive OG data extraction
+- **SSR Pages**: SEO-optimized public wishlist pages at `/p/:slug`
+- **Ideas Feed**: Curated collections API with sample data
+
+### 🔧 Key Architecture Decisions
+- **Guest System**: Auto-creates `guest_{uuid}` users on first claim/contribution
+- **Privacy Model**: Public/link-only/private wishlists with secure share tokens
+- **Surprise Mode**: Claims can be hidden from wishlist owners until purchased
+- **Parser Policy**: OG image mandatory, title/price best-effort (per tech requirements)
+- **Serialization**: Conditional attributes based on user permissions and privacy settings
+
+### 📁 File Organization
+- Models contain business logic and validation rules
+- Controllers handle authorization and delegate to services
+- Serializers provide permission-aware JSON responses
+- Services encapsulate complex business operations
+- Background jobs handle time-consuming operations
+
+### 🚀 Ready for Stage 3
+- Payment integration (donations/group gifts)
+- Browser extension implementation
+- Performance optimization and caching
+- Comprehensive test suite
+
+## Original Design Notes
 
 - Aligns with PRD (`PRD_WishApp.md`) and AppMap (`AppMap_WishApp.md`) plus `tech_stack_WishApp.md` version policy.
 - Public SEO page SSR at `/p/:slug` in `backend/app/views/public/`.

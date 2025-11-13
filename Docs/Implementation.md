@@ -126,18 +126,18 @@ Scope: Backend (Rails API), Flutter App (iOS/Android/Web), Browser Extension (MV
 **Dependencies:** None
 
 #### Sub-steps
-- [ ] Initialize monorepo structure (`backend/`, `app/`, `extension/`, `infra/`, `Docs/`).
-- [ ] Backend bootstrap: Ruby 3.3.x, Rails 8 API-only, Bundler; configure RSpec, RuboCop, Brakeman, Lograge.
-- [ ] DB/Cache setup: Postgres 17, Redis 7; Docker Compose services.
-- [ ] Sidekiq setup: queues (parse, images, mailers, notifications), Redis connection.
-- [ ] Auth skeleton: Devise + devise-jwt (JWT strategy, refresh), rack-cors, rack-attack.
-- [ ] API scaffolding: versioned namespace (`/api/v1`), error handling, pagination basics.
-- [ ] Storage: Supabase Storage client (HTTP), signed URL helper, Cloudflare CDN config notes.
-- [ ] Flutter app bootstrap: Riverpod, GoRouter, themes, env config, dio client with interceptors.
-- [ ] Extension workspace bootstrap: Vite + TS + MV3 manifest, polyfill wiring.
-- [ ] CI: GitHub Actions (Ruby lint/spec, Flutter build/test, Extension typecheck/build), Brakeman.
-- [ ] Env/Secrets: `.env` templates; document variables; add `.fvmrc`, `.ruby-version`, `.nvmrc`.
-- [ ] CHANGELOG.md initialized with pinned versions (per versioning policy).
+- [x] Initialize monorepo structure (`backend/`, `app/`, `extension/`, `infra/`, `Docs/`).
+- [x] Backend bootstrap: Ruby 3.3.x, Rails 8 API-only, Bundler; configure RSpec, RuboCop, Brakeman, Lograge.
+- [x] DB/Cache setup: Postgres 17, Redis 7; Docker Compose services.
+- [x] Sidekiq setup: queues (parse, images, mailers, notifications), Redis connection.
+- [x] Auth skeleton: Devise + devise-jwt (JWT strategy, refresh), rack-cors, rack-attack.
+- [x] API scaffolding: versioned namespace (`/api/v1`), error handling, pagination basics.
+- [x] Storage: Supabase Storage client (HTTP), signed URL helper, Cloudflare CDN config notes.
+- [x] Flutter app bootstrap: Riverpod, GoRouter, themes, env config, dio client with interceptors.
+- [x] Extension workspace bootstrap: Vite + TS + MV3 manifest, polyfill wiring.
+- [x] CI: GitHub Actions (Ruby lint/spec, Flutter build/test, Extension typecheck/build), Brakeman.
+- [x] Env/Secrets: `.env` templates; document variables; add `.fvmrc`, `.ruby-version`, `.nvmrc`.
+- [x] CHANGELOG.md initialized with pinned versions (per versioning policy).
 
 #### Required resources
 - Dev accounts: Supabase, Cloudflare, Email provider, Sentry (optional), Payment provider sandbox.
@@ -149,13 +149,21 @@ Scope: Backend (Rails API), Flutter App (iOS/Android/Web), Browser Extension (MV
 **Dependencies:** Stage 1 completion
 
 #### Backend
-- [ ] Domain models & migrations: `users`, `wishlists` (title, event_date, visibility, slug), `wishes` (title, image_url, price, url, note, status), `claims` (wish_id, guest_id), `guests`.
-- [ ] Auth endpoints: register, login, refresh, revoke; Lite Mode auto-provision on claim.
-- [ ] Wishlist API: CRUD, privacy, slug generation, share link.
-- [ ] Wish API: CRUD; `POST /api/v1/wishes/parse` (URL) → enqueue parse job; return preview payload.
-- [ ] Claim API: `POST /api/v1/wishes/:id/claim`, `POST /api/v1/wishes/:id/unclaim`, `POST /api/v1/wishes/:id/mark_purchased`.
-- [ ] SSR Public page: `GET /p/:slug` (Rails view), canonical/meta tags (SEO), link to deep app routes.
-- [ ] Ideas Feed (MVP): endpoints to serve curated collections (seeded fixtures).
+- [x] Domain models & migrations: `users`, `wishlists` (title, event_date, visibility, slug), `wishes` (title, image_url, price, url, note, status), `claims` (wish_id, guest_id), `guests`.
+- [x] Auth endpoints: register, login, refresh, revoke; Lite Mode auto-provision on claim.
+- [x] Wishlist API: CRUD, privacy, slug generation, share link.
+- [x] Wish API: CRUD; `POST /api/v1/wishes/parse` (URL) → enqueue parse job; return preview payload.
+- [x] Claim API: `POST /api/v1/wishes/:id/claim`, `POST /api/v1/wishes/:id/unclaim`, `POST /api/v1/wishes/:id/mark_purchased`.
+- [x] SSR Public page: `GET /p/:slug` (Rails view), canonical/meta tags (SEO), link to deep app routes.
+- [x] Ideas Feed (MVP): endpoints to serve curated collections (seeded fixtures).
+
+**Implementation Status**: ✅ **COMPLETED** (2025-11-13)
+- All backend APIs implemented with proper authentication, authorization, and business logic
+- Domain models with associations, validations, callbacks, and counter caches
+- WishParserService with comprehensive OG data parsing (supports major e-commerce sites)
+- SSR public pages with SEO optimization and responsive design
+- Guest Lite Mode fully functional with auto-provisioning and upgrade paths
+- Comprehensive API serializers with conditional attributes based on user permissions
 
 #### Flutter app
 - [ ] App shell: tabs (Lists, Feed, Add, Profile) with GoRouter routes and deep links.

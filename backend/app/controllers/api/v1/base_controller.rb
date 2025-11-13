@@ -1,5 +1,6 @@
 class Api::V1::BaseController < ApplicationController
   # API-specific configurations
+  before_action :authenticate_user!
   before_action :ensure_json_request
   before_action :set_default_response_format
 
@@ -7,7 +8,10 @@ class Api::V1::BaseController < ApplicationController
 
   # Ensure all API requests are JSON
   def ensure_json_request
-    unless request.content_type == 'application/json' || params[:format] == 'json'
+    # Skip for GET requests and health checks
+    return if request.get? || request.path.include?('health')
+    
+    unless request.content_type&.include?('application/json') || params[:format] == 'json'
       render json: { 
         error: 'Content type must be application/json' 
       }, status: :bad_request

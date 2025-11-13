@@ -5,6 +5,12 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
+  # Associations
+  has_many :wishlists, dependent: :destroy
+  has_many :wishes, through: :wishlists
+  has_many :claims, dependent: :destroy
+  has_one :guest, dependent: :destroy
+
   # Validations
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :password, length: { minimum: 8 }, if: :password_required?

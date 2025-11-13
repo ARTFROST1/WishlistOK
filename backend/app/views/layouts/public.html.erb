@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <!-- SEO Meta Tags -->
+  <title><%= @page_title || "WishApp - Universal Wishlist Platform" %></title>
+  <meta name="description" content="<%= @page_description || "Create and share wishlists for any occasion. Add gifts from any store, share with friends, and coordinate group gifts." %>">
+  <meta name="keywords" content="wishlist, gifts, birthday, wedding, holidays, gift registry">
+  <meta name="author" content="WishApp">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Canonical URL -->
+  <% if @canonical_url %>
+    <link rel="canonical" href="<%= @canonical_url %>">
+  <% end %>
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="<%= @page_title || "WishApp" %>">
+  <meta property="og:description" content="<%= @page_description %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= @canonical_url || request.original_url %>">
+  <meta property="og:site_name" content="WishApp">
+  <% if @page_image %>
+    <meta property="og:image" content="<%= @page_image %>">
+    <meta property="og:image:alt" content="<%= @page_title %>">
+  <% end %>
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= @page_title %>">
+  <meta name="twitter:description" content="<%= @page_description %>">
+  <% if @page_image %>
+    <meta name="twitter:image" content="<%= @page_image %>">
+  <% end %>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- CSS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #fafbfc;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: white;
+      border-bottom: 1px solid #e1e5e9;
+      padding: 16px 0;
+      margin-bottom: 24px;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FF7A59;
+      text-decoration: none;
+    }
+    
+    .cta-button {
+      background: #FF7A59;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    
+    .cta-button:hover {
+      background: #e5673d;
+    }
+    
+    .breadcrumbs {
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .breadcrumbs a {
+      color: #FF7A59;
+      text-decoration: none;
+    }
+    
+    .wishlist-header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 32px 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .wishlist-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #1f2937;
+    }
+    
+    .wishlist-description {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+    
+    .wishlist-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .wishes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    
+    .wish-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .wish-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .wish-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+    
+    .wish-content {
+      padding: 16px;
+    }
+    
+    .wish-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1f2937;
+    }
+    
+    .wish-price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #FF7A59;
+      margin-bottom: 8px;
+    }
+    
+    .wish-description {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    
+    .wish-status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-available {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-claimed {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .section-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #1f2937;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: #6b7280;
+    }
+    
+    footer {
+      background: white;
+      border-top: 1px solid #e1e5e9;
+      padding: 32px 0;
+      margin-top: 48px;
+      text-align: center;
+      color: #6b7280;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .wishlist-title {
+        font-size: 24px;
+      }
+      
+      .wishlist-meta {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .wishes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="/" class="logo">WishApp</a>
+        <a href="/app" class="cta-button">Create Your Wishlist</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <%= yield %>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <%= Date.current.year %> WishApp. Create and share wishlists for any occasion.</p>
+    </div>
+  </footer>
+</body>
+</html>

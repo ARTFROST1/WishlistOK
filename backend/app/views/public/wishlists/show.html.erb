@@ -1,0 +1,146 @@
+<% content_for :layout, 'public' %>
+
+<!-- Breadcrumbs -->
+<nav class="breadcrumbs">
+  <% @breadcrumbs.each_with_index do |crumb, index| %>
+    <% if index > 0 %> › <% end %>
+    <% if crumb[:url] %>
+      <a href="<%= crumb[:url] %>"><%= crumb[:name] %></a>
+    <% else %>
+      <span><%= crumb[:name] %></span>
+    <% end %>
+  <% end %>
+</nav>
+
+<!-- Wishlist Header -->
+<div class="wishlist-header">
+  <h1 class="wishlist-title"><%= @wishlist.title %></h1>
+  
+  <% if @wishlist.description.present? %>
+    <p class="wishlist-description"><%= simple_format(@wishlist.description) %></p>
+  <% end %>
+  
+  <div class="wishlist-meta">
+    <% if @wishlist.event_date %>
+      <div>
+        <% if @wishlist.days_until_event %>
+          <% if @wishlist.days_until_event > 0 %>
+            📅 <%= @wishlist.days_until_event %> days until <%= @wishlist.event_date.strftime("%B %d, %Y") %>
+          <% elsif @wishlist.days_until_event == 0 %>
+            🎉 Event is today!
+          <% else %>
+            📅 Event was <%= @wishlist.event_date.strftime("%B %d, %Y") %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+    
+    <div>
+      🎁 <%= pluralize(@wishes.count, 'item') %>
+    </div>
+    
+    <% if @wishlist.progress_percentage > 0 %>
+      <div>
+        ✅ <%= @wishlist.progress_percentage.round %>% claimed
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Available Wishes -->
+<% if @available_wishes.any? %>
+  <section>
+    <h2 class="section-title">Available Gifts (<%= @available_wishes.count %>)</h2>
+    <div class="wishes-grid">
+      <% @available_wishes.each do |wish| %>
+        <div class="wish-card">
+          <% if wish.primary_image %>
+            <img src="<%= wish.primary_image %>" alt="<%= wish.title %>" class="wish-image" loading="lazy">
+          <% else %>
+            <div class="wish-image" style="display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+              🎁
+            </div>
+          <% end %>
+          
+          <div class="wish-content">
+            <h3 class="wish-title"><%= wish.title %></h3>
+            
+            <% if wish.formatted_price %>
+              <div class="wish-price"><%= wish.formatted_price %></div>
+            <% end %>
+            
+            <% if wish.description.present? %>
+              <p class="wish-description"><%= truncate(wish.description, length: 100) %></p>
+            <% end %>
+            
+            <span class="wish-status status-available">Available</span>
+            
+            <% if wish.url.present? %>
+              <div style="margin-top: 12px;">
+                <a href="<%= wish.url %>" target="_blank" rel="noopener" 
+                   style="color: #FF7A59; text-decoration: none; font-size: 14px;">
+                  View Product →
+                </a>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<!-- Claimed Wishes -->
+<% if @claimed_wishes.any? %>
+  <section>
+    <h2 class="section-title">Claimed Gifts (<%= @claimed_wishes.count %>)</h2>
+    <div class="wishes-grid">
+      <% @claimed_wishes.each do |wish| %>
+        <div class="wish-card" style="opacity: 0.7;">
+          <% if wish.primary_image %>
+            <img src="<%= wish.primary_image %>" alt="<%= wish.title %>" class="wish-image" loading="lazy">
+          <% else %>
+            <div class="wish-image" style="display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+              🎁
+            </div>
+          <% end %>
+          
+          <div class="wish-content">
+            <h3 class="wish-title"><%= wish.title %></h3>
+            
+            <% if wish.formatted_price %>
+              <div class="wish-price"><%= wish.formatted_price %></div>
+            <% end %>
+            
+            <% if wish.description.present? %>
+              <p class="wish-description"><%= truncate(wish.description, length: 100) %></p>
+            <% end %>
+            
+            <span class="wish-status status-claimed">
+              <%= wish.purchased? ? 'Purchased' : 'Claimed' %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<!-- Empty State -->
+<% if @wishes.empty? %>
+  <div class="empty-state">
+    <h2>No gifts yet</h2>
+    <p>This wishlist is waiting for some amazing gifts to be added.</p>
+  </div>
+<% end %>
+
+<!-- Call to Action -->
+<div style="background: white; border-radius: 12px; padding: 32px; text-align: center; margin-top: 32px;">
+  <h3 style="margin-bottom: 16px; color: #1f2937;">Want to create your own wishlist?</h3>
+  <p style="color: #6b7280; margin-bottom: 24px;">
+    Join thousands of people who use WishApp to organize their gift wishes and make gifting easier for everyone.
+  </p>
+  <a href="/app" class="cta-button" style="display: inline-block;">
+    Get Started - It's Free
+  </a>
+</div>

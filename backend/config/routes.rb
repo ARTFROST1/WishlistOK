@@ -27,12 +27,66 @@ Rails.application.routes.draw do
       # Health check endpoint
       get 'health', to: 'health#show'
       
-      # API resources will be defined in Stage 2
+      # Guest auth endpoints (Lite Mode)
+      namespace :auth do
+        resources :guests, only: [:create] do
+          collection do
+            put :upgrade
+            get :status
+          end
+        end
+      end
+      
+      # Wishlist resources
+      resources :wishlists do
+        member do
+          get :share_link
+        end
+        
+        # Nested wishes under wishlists
+        resources :wishes, except: [:index] do
+          # Nested claims under wishes
+          resources :claims do
+            member do
+              post :mark_purchased
+            end
+          end
+        end
+      end
+      
+      # Standalone wish endpoints
+      resources :wishes, only: [] do
+        collection do
+          post :parse
+        end
+        
+        # Direct access to claims
+        resources :claims, only: [:index, :show]
+      end
+      
+      # Special routes for shared/public access
+      get 'wishlists/by_slug/:slug', to: 'wishlists#by_slug'
+      get 'wishlists/shared/:id', to: 'wishlists#shared'
+      
+      # User claims
+      get 'users/:user_id/claims', to: 'claims#user_claims'
+      
+      # Ideas Feed (curated collections)
+      resources :ideas, only: [:index, :show] do
+        collection do
+          get :categories
+          get :featured
+          get :trending
+        end
+      end
     end
   end
 
   # Public routes for SSR pages
   namespace :public do
-    # Public wishlist pages at /p/:slug will be added in Stage 2
+    resources :wishlists, only: [:show], param: :slug
   end
+  
+  # Convenient route for /p/:slug
+  get '/p/:slug', to: 'public/wishlists#show'
 end
