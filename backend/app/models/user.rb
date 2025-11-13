@@ -1,0 +1,82 @@
+class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable,
+         :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
+
+  # Validations
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :password, length: { minimum: 8 }, if: :password_required?
+
+  # Enums
+  enum user_type: { regular: 0, guest: 1, admin: 2 }
+
+  # Scopes
+  scope :active, -> { where(active: true) }
+  scope :guests, -> { where(user_type: :guest) }
+  scope :regular_users, -> { where(user_type: :regular) }
+
+  # Callbacks
+  before_save :downcase_email
+  after_create :set_default_values
+
+  # Instance methods
+  def guest?
+    user_type == 'guest'
+  end
+
+  def admin?
+    user_type == 'admin'
+  end
+
+  def full_name
+    [first_name, last_name].compact.join(' ').presence || email.split('@').first
+  end
+
+  def display_name
+    full_name.presence || "User #{id}"
+  end
+
+  # Guest user creation for Lite Mode
+  def self.create_guest_user(identifier = nil)
+    guest_email = identifier || "guest_#{SecureRandom.uuid}@wishapp.local"
+    guest_password = SecureRandom.hex(16)
+    
+    create!(
+      email: guest_email,
+      password: guest_password,
+      password_confirmation: guest_password,
+      user_type: :guest,
+      active: true
+    )
+  end
+
+  # Convert guest to regular user
+  def upgrade_to_regular_user!(email, password, password_confirmation, first_name: nil, last_name: nil)
+    return false unless guest?
+    
+    update!(
+      email: email,
+      password: password,
+      password_confirmation: password_confirmation,
+      first_name: first_name,
+      last_name: last_name,
+      user_type: :regular
+    )
+  end
+
+  private
+
+  def downcase_email
+    self.email = email.downcase if email.present?
+  end
+
+  def set_default_values
+    self.update_columns(active: true) if active.nil?
+  end
+
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
+  end
+end
