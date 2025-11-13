@@ -16,7 +16,7 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 }, if: :password_required?
 
   # Enums
-  enum user_type: { regular: 0, guest: 1, admin: 2 }
+  enum :user_type, { regular: 0, guest: 1, admin: 2 }
 
   # Scopes
   scope :active, -> { where(active: true) }

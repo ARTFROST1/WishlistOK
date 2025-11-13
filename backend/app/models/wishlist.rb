@@ -4,7 +4,7 @@ class Wishlist < ApplicationRecord
   has_many :claims, through: :wishes
 
   # Enums
-  enum visibility: { private: 0, link_only: 1, public: 2 }
+  enum :visibility, { private: 0, link_only: 1, public: 2 }
 
   # Validations
   validates :title, presence: true, length: { maximum: 255 }

@@ -4,8 +4,8 @@ class Wish < ApplicationRecord
   has_one :active_claim, -> { where(status: [:claimed, :purchased]) }, class_name: 'Claim'
 
   # Enums
-  enum status: { available: 0, claimed: 1, purchased: 2 }
-  enum priority: { low: 0, medium: 1, high: 2 }
+  enum :status, { available: 0, claimed: 1, purchased: 2 }
+  enum :priority, { low: 0, medium: 1, high: 2 }
 
   # Validations
   validates :title, presence: true, length: { maximum: 255 }

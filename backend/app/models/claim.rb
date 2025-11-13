@@ -3,7 +3,7 @@ class Claim < ApplicationRecord
   belongs_to :user
 
   # Enums
-  enum status: { claimed: 0, purchased: 1, cancelled: 2 }
+  enum :status, { claimed: 0, purchased: 1, cancelled: 2 }
 
   # Validations
   validates :user_id, uniqueness: { scope: :wish_id, message: "has already claimed this wish" }
