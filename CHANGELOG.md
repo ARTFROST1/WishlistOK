@@ -19,6 +19,10 @@ We pin all major dependencies to specific versions for stability and security:
 - Initial monorepo structure with backend/, app/, extension/, infra/, Docs/
 - Project documentation and development guidelines
 - Root configuration files (.editorconfig, .gitignore, README.md)
+- Flutter app bootstrap with pubspec.yaml, .fvmrc, analysis_options.yaml
+- Extension workspace with TypeScript, Vite, MV3 manifest configuration
+- Basic popup, background, and content script structure for extension
+- Environment templates for all components
 
 ## [0.1.0] - 2025-11-12
 

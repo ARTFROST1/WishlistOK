@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WishApp</title>
+  <style>
+    body {
+      width: 320px;
+      min-height: 200px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #fafafa;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e1e1e1;
+    }
+    
+    .logo {
+      width: 24px;
+      height: 24px;
+      background: #FF7A59;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .status.stage1 {
+      background: #e8f5e8;
+      color: #2d5a2d;
+      border: 1px solid #c3e6c3;
+    }
+    
+    .status.future {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+    
+    .button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #FF7A59;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background: #e6653f;
+    }
+    
+    .button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .secondary-button {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .secondary-button:hover {
+      background: #e0e0e0;
+    }
+    
+    .footer {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">W</div>
+    <div class="title">WishApp</div>
+  </div>
+  
+  <div class="status stage1">
+    ✅ Stage 1 Complete<br>
+    Extension workspace ready
+  </div>
+  
+  <button class="button" disabled>
+    Add to Wishlist
+  </button>
+  
+  <button class="button secondary-button" disabled>
+    Quick Parse
+  </button>
+  
+  <div class="status future">
+    🚧 Parsing & API integration<br>
+    Coming in Stage 2
+  </div>
+  
+  <div class="footer">
+    v1.0.0 - Foundation Complete
+  </div>
+  
+  <script type="module" src="popup.ts"></script>
+</body>
+</html>

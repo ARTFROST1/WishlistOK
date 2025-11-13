@@ -1,0 +1,32 @@
+{
+  "name": "wishapp-extension",
+  "version": "1.0.0",
+  "description": "WishApp Browser Extension - Add items to wishlists from any website",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch --mode development",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src"
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.12.0",
+    "axios": "^1.7.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/webextension-polyfill": "^0.12.1",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint": "^9.15.0",
+    "prettier": "^3.3.3",
+    "typescript": "5.9.2",
+    "vite": "7.0.0-beta.4",
+    "vite-plugin-web-extension": "^4.1.6"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
