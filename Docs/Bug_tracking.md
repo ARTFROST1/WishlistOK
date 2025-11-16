@@ -222,3 +222,49 @@ Stage: Stage 2 Backend Implementation
 - Seed initial data
 - Configure background job processing
 - Set up monitoring and logging
+
+---
+
+## High Priority – Android Build Blockers (2025-11-14)
+
+### NDK Corruption / Missing source.properties
+- **Symptoms**: Gradle fails with `CXX1101` and messages like:
+  - `NDK ... did not have a source.properties file`
+  - Flutter fix suggests deleting NDK at `C:\Users\moroz\AppData\Local\Android\Sdk\ndk\28.2.13676358`
+- **Impact**: `assembleDebug` fails; `flutter run` aborts.
+- **Root cause**: Malformed NDK download; AGP requests a specific side-by-side NDK (`ndk;27.0.12077973`).
+- **Resolution**:
+  1) Ensure `ndkVersion = flutter.ndkVersion` in `app/android/app/build.gradle.kts`.
+  2) Use `sdkmanager` to uninstall broken NDKs and install the compatible one:
+     - Uninstall: `"ndk;28.2.13676358"` (and any broken versions)
+     - Install: `"ndk;27.0.12077973"` (plus `"cmake;3.22.1"` if missing)
+  3) Re-run: `flutter clean && flutter pub get && flutter run`.
+
+### Low Disk Space on C:\ (Flutter temp / Gradle caches)
+- **Symptoms**: `FileSystemException: writeFrom failed ... app.dill (OS Error: There is not enough space on the disk. errno = 112)`.
+- **Impact**: Dart compiler and Gradle cannot write temp/build artifacts to `%LOCALAPPDATA%\Temp` or `build/`.
+- **Resolution**:
+  - Free ≥5–10 GB on `C:`; and/or offload build & temp to `D:` for this session:
+    - Create: `D:\Temp`, `D:\.gradle`.
+    - Run commands with inline env: `$Env:TEMP='D:\Temp'; $Env:TMP='D:\Temp'; $Env:GRADLE_USER_HOME='D:\.gradle'`.
+  - Then rebuild: `flutter clean && flutter pub get && flutter run -d <device>`.
+
+### Commands (PowerShell) – sdkmanager invocation pattern
+Use the call operator `&` and resolve the sdkmanager path safely:
+```
+$sdk = $Env:ANDROID_SDK_ROOT; if ([string]::IsNullOrEmpty($sdk)) { $sdk = $Env:ANDROID_HOME }
+if (-not (Test-Path "$sdk\cmdline-tools\latest\bin\sdkmanager.bat")) {
+  $tool = (Get-ChildItem -Path "$sdk\cmdline-tools" -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName + '\\bin\\sdkmanager.bat'
+} else { $tool = "$sdk\cmdline-tools\latest\bin\sdkmanager.bat" }
+
+# List packages
+& $tool --list
+
+# Uninstall broken NDK(s)
+& $tool --uninstall "ndk;28.2.13676358"
+
+# Install compatible NDK and cmake
+& $tool --install "ndk;27.0.12077973" "cmake;3.22.1"
+
+# Build with offloaded temp/caches
+$Env:TEMP='D:\\Temp'; $Env:TMP='D:\\Temp'; $Env:GRADLE_USER_HOME='D:\\.gradle'; flutter clean; flutter pub get; flutter run -d emulator-5554
