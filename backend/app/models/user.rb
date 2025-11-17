@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :wishlists, dependent: :destroy
   has_many :wishes, through: :wishlists
   has_many :claims, dependent: :destroy
+  has_many :payments, dependent: :destroy
   has_one :guest, dependent: :destroy
 
   # Validations

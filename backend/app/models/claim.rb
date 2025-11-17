@@ -1,6 +1,7 @@
 class Claim < ApplicationRecord
   belongs_to :wish
   belongs_to :user
+  has_many :payments, dependent: :destroy
 
   # Enums
   enum :status, { claimed: 0, purchased: 1, cancelled: 2 }

@@ -202,9 +202,61 @@ Scope: Backend (Rails API), Flutter App (iOS/Android/Web), Browser Extension (MV
 **Dependencies:** Stage 2 completion
 
 #### Payments & Donations
-- [ ] Implement provider (CloudPayments or YooKassa) happy-path for donations/group gifts.
-- [ ] Webhooks: payment confirmation and contribution records; security validation.
-- [ ] UI: donate modal, progress toward target price; owner can donate too.
+- [x] Implement provider (CloudPayments or YooKassa) happy-path for donations/group gifts.
+- [x] Webhooks: payment confirmation and contribution records; security validation.
+- [x] UI: donate modal, progress toward target price; owner can donate too.
+
+**Implementation Status**: ✅ **COMPLETED** (2025-11-17)
+
+**Backend Implementation:**
+- Payment model with support for YooKassa and CloudPayments providers
+- Payment status tracking (pending, processing, succeeded, failed, cancelled, refunded)
+- PaymentService for provider integration and webhook processing
+- Secure webhook endpoints with signature verification
+- API endpoints for contributions, refunds, and payment history
+- Automatic claim and wish status updates on successful payment
+- Full refund support within 30 days
+- Payment serializer with conditional contributor visibility (surprise mode)
+
+**Flutter App Implementation:**
+- Payment models with Freezed (Payment, PaymentContributor, ContributionStats)
+- PaymentsRepository for API communication
+- PaymentController with Riverpod state management
+- ContributeModal with amount input and quick amount buttons
+- ContributionProgressCard with visual progress tracking
+- Recent contributors display
+- Deep linking to payment confirmation URLs
+- Currency support (RUB, USD, EUR, GBP)
+
+**Features:**
+- Group gifts with multiple contributors
+- Visual progress bars showing funding progress
+- Target price tracking with remaining amount display
+- Contributor list with avatars
+- Anonymous contributions in surprise mode
+- Secure payment processing through YooKassa
+- Webhook-based payment confirmation
+- Payment refunds with validation
+- Payment history for users
+
+**Documentation:**
+- Comprehensive PAYMENTS_SETUP.md guide
+- Environment variable configuration
+- Webhook setup instructions
+- Testing guide with test cards
+- Production deployment checklist
+
+**Database Schema:**
+- payments table with provider integration fields
+- Foreign keys to claims, users, and wishes
+- JSONB metadata and provider_response fields
+- Indexes for performance optimization
+
+**Security:**
+- Webhook signature verification (HTTP Basic Auth for YooKassa)
+- JWT authentication for all payment endpoints
+- PCI compliance (no card data stored)
+- Authorization checks (users can't contribute to own wishes)
 
 #### In-App Browser Auto-Parse
 - [ ] Integrate `flutter_inappwebview` with floating “+ Add to Wishlist” overlay.

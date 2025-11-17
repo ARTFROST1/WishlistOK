@@ -79,6 +79,27 @@ Rails.application.routes.draw do
           get :trending
         end
       end
+
+      # Payments & Contributions
+      resources :payments, only: [:index, :show] do
+        member do
+          post :refund
+        end
+      end
+
+      # Contributions for wishes
+      resources :wishes, only: [] do
+        member do
+          post :contribute, to: 'payments#create'
+          get :contributions, to: 'payments#wish_contributions'
+        end
+      end
+
+      # Webhooks (no auth required, verified by signature)
+      namespace :webhooks do
+        post :yookassa
+        post :cloudpayments
+      end
     end
   end
 
