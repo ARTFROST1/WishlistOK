@@ -49,3 +49,4 @@ extension/.env.local
 # === Infra ===
 infra/.env
 infra/*.env
+/.claude/settings.local.json
