@@ -166,14 +166,29 @@ Scope: Backend (Rails API), Flutter App (iOS/Android/Web), Browser Extension (MV
 - Comprehensive API serializers with conditional attributes based on user permissions
 
 #### Flutter app
-- [ ] App shell: tabs (Lists, Feed, Add, Profile) with GoRouter routes and deep links.
-- [ ] Auth screens (email); secure token storage; guest Lite Mode handling.
-- [ ] Lists: My Wishlists (grid), Create/Edit Wishlist.
-- [ ] Wishlist Detail: grouped items (Available / Claimed), share link button, add wish button.
-- [ ] Add Wish: Manual entry; Paste URL → call parse API → preview → select wishlist → save.
-- [ ] Claim flow (guest): claim, mark purchased; owner sees “claimed” without identity.
-- [ ] Feed: categories carousel + curated collections; item → add to list flow.
-- [ ] Theming: light/dark, base components (cards, buttons, modals), loading/empty/error states.
+- [x] App shell: tabs (Lists, Feed, Add, Profile) with GoRouter routes and deep links.
+- [x] Auth screens (email); secure token storage; guest Lite Mode handling.
+- [x] Lists: My Wishlists (grid), Create/Edit Wishlist.
+- [x] Wishlist Detail: grouped items (Available / Claimed), share link button, add wish button.
+- [x] Add Wish: Manual entry; Paste URL → call parse API → preview → select wishlist → save.
+- [x] Claim flow (guest): claim, mark purchased; owner sees "claimed" without identity.
+- [x] Feed: categories carousel + curated collections; item → add to list flow.
+- [x] Theming: light/dark, base components (cards, buttons, modals), loading/empty/error states.
+
+**Implementation Status**: ✅ **COMPLETED** (2025-11-17)
+- Complete app architecture with feature-first structure and clean separation of concerns
+- Riverpod 2.x state management with providers for all features
+- GoRouter configuration with deep links and shell routes (bottom navigation)
+- Material 3 theming with light/dark modes and brand colors
+- Comprehensive auth flow with JWT + guest mode support (FlutterSecureStorage)
+- Full CRUD UI for wishlists and wishes with mock data for development
+- URL parsing flow with preview and manual entry tabs
+- Feed screen with categories carousel, collections, and trending items
+- Dio HTTP client with auth interceptors and error handling
+- Freezed models with JSON serialization for all domain entities
+- Repository pattern for data layer (auth, wishlists, wishes, feed)
+- Reusable UI components (loading, error, async_value widgets)
+- Empty states, loading states, and error handling throughout the app
 
 #### Extension (optional in Stage 2)
 - [ ] Basic popup UI: capture URL, parse via API, select wishlist, save.
