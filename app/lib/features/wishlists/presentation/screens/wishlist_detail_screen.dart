@@ -313,9 +313,7 @@ class _WishCard extends StatelessWidget {
     
     return Card(
       child: InkWell(
-        onTap: () {
-          // TODO: Navigate to wish detail
-        },
+        onTap: () => context.go('/wishes/${wish['id']}'),
         borderRadius: BorderRadius.circular(AppTheme.radius12),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacing12),
