@@ -16,7 +16,7 @@ class CreateWishlists < ActiveRecord::Migration[8.0]
       t.timestamps null: false
     end
 
-    add_index :wishlists, :user_id
+    # Note: t.references :user already creates index_wishlists_on_user_id
     add_index :wishlists, :slug, unique: true
     add_index :wishlists, :visibility
     add_index :wishlists, :event_date

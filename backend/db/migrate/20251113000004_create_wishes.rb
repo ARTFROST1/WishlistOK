@@ -22,7 +22,7 @@ class CreateWishes < ActiveRecord::Migration[8.0]
       t.timestamps null: false
     end
 
-    add_index :wishes, :wishlist_id
+    # Note: t.references :wishlist already creates index_wishes_on_wishlist_id
     add_index :wishes, :status
     add_index :wishes, :priority
     add_index :wishes, :active

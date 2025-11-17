@@ -14,8 +14,7 @@ class CreateClaims < ActiveRecord::Migration[8.0]
       t.timestamps null: false
     end
 
-    add_index :claims, :wish_id
-    add_index :claims, :user_id
+    # Note: t.references already creates single-column indexes
     add_index :claims, :status
     add_index :claims, :purchased_at
     add_index :claims, [:wish_id, :user_id], unique: true # prevent duplicate claims

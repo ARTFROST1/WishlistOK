@@ -33,7 +33,7 @@ gem "nokogiri", "~> 1.15"
 gem "down", "~> 5.4"
 
 # Payment providers
-gem "yookassa", "~> 0.4" # YooKassa (Yandex.Checkout) integration
+gem "yookassa", "~> 0.2" # YooKassa (Yandex.Checkout) integration
 
 # Logging
 gem "lograge", "~> 0.14"
