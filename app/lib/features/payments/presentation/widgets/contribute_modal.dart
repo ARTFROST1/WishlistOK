@@ -163,10 +163,10 @@ class _ContributeModalState extends ConsumerState<ContributeModal> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Currency selector
-                    Container(
+                    SizedBox(
                       width: 80,
                       child: DropdownButtonFormField<String>(
-                        value: _selectedCurrency,
+                        initialValue: _selectedCurrency,
                         decoration: const InputDecoration(
                           labelText: 'Currency',
                         ),
@@ -174,7 +174,7 @@ class _ContributeModalState extends ConsumerState<ContributeModal> {
                             .map((currency) => DropdownMenuItem(
                                   value: currency,
                                   child: Text(currency),
-                                ))
+                                ),)
                             .toList(),
                         onChanged: (value) {
                           if (value != null) {
@@ -213,7 +213,7 @@ class _ContributeModalState extends ConsumerState<ContributeModal> {
                         ),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,2}')),
+                              RegExp(r'^\d+\.?\d{0,2}'),),
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -248,7 +248,7 @@ class _ContributeModalState extends ConsumerState<ContributeModal> {
                           ),
                         ),
                         child: Text(
-                            '${_getCurrencySymbol(_selectedCurrency)}${amount.toStringAsFixed(0)}'),
+                            '${_getCurrencySymbol(_selectedCurrency)}${amount.toStringAsFixed(0)}',),
                       );
                     }).toList(),
                   ),

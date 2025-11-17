@@ -32,7 +32,7 @@ class WishesRepository {
     try {
       final response = await _dio.post('/wishes/parse', data: {
         'url': url,
-      });
+      },);
 
       return ParseWishResponse.fromJson(response.data);
     } on DioException catch (e) {
@@ -44,7 +44,7 @@ class WishesRepository {
     try {
       final response = await _dio.post('/wishes', data: {
         'wish': request.toJson(),
-      });
+      },);
 
       return Wish.fromJson(response.data['wish']);
     } on DioException catch (e) {
@@ -56,7 +56,7 @@ class WishesRepository {
     try {
       final response = await _dio.put('/wishes/$id', data: {
         'wish': request.toJson(),
-      });
+      },);
 
       return Wish.fromJson(response.data['wish']);
     } on DioException catch (e) {

@@ -19,7 +19,7 @@ class AuthRepository {
           'email': email,
           'password': password,
         },
-      });
+      },);
 
       return AuthResponse.fromJson(response.data);
     } on DioException catch (e) {
@@ -41,7 +41,7 @@ class AuthRepository {
           'first_name': firstName,
           'last_name': lastName,
         },
-      });
+      },);
 
       return AuthResponse.fromJson(response.data);
     } on DioException catch (e) {

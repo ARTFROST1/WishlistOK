@@ -17,7 +17,7 @@ class WishlistsRepository {
       final response = await _dio.get('/wishlists', queryParameters: {
         'page': page,
         'per_page': perPage,
-      });
+      },);
 
       return WishlistsResponse.fromJson(response.data);
     } on DioException catch (e) {
@@ -47,7 +47,7 @@ class WishlistsRepository {
     try {
       final response = await _dio.post('/wishlists', data: {
         'wishlist': request.toJson(),
-      });
+      },);
 
       return Wishlist.fromJson(response.data['wishlist']);
     } on DioException catch (e) {
@@ -59,7 +59,7 @@ class WishlistsRepository {
     try {
       final response = await _dio.put('/wishlists/$id', data: {
         'wishlist': request.toJson(),
-      });
+      },);
 
       return Wishlist.fromJson(response.data['wishlist']);
     } on DioException catch (e) {

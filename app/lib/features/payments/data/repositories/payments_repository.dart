@@ -18,7 +18,7 @@ class PaymentsRepository {
       final response = await _dio.get('/payments', queryParameters: {
         'page': page,
         'per_page': perPage,
-      });
+      },);
 
       final List<dynamic> paymentsData = response.data['data'] ?? [];
       return paymentsData
@@ -90,7 +90,7 @@ class PaymentsRepository {
     try {
       final response = await _dio.post(
         '/payments/$paymentId/refund',
-        data: if (amount != null) {'amount': amount},
+        data: ,if (amount != null) {'amount': amount},
       );
 
       return Payment.fromJson(response.data['data']['attributes']);
