@@ -26,6 +26,9 @@ Rails.application.routes.draw do
       
       # Health check endpoint
       get 'health', to: 'health#show'
+
+      # Current user profile
+      get 'users/me', to: 'users#me'
       
       # Guest auth endpoints (Lite Mode)
       namespace :auth do

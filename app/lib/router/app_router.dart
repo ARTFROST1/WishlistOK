@@ -13,6 +13,7 @@ import '../features/wishes/presentation/screens/add_wish_screen.dart';
 import '../features/wishes/presentation/screens/wish_detail_screen.dart';
 import '../features/feed/presentation/screens/feed_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/auth/application/auth_provider.dart';
 
 // Route names
 class RouteNames {
@@ -31,11 +32,22 @@ class RouteNames {
   static const String publicWishlist = '/p/:slug';
 }
 
+// Auth routes that don't require authentication
+const _authRoutes = [
+  RouteNames.welcome,
+  RouteNames.login,
+  RouteNames.signup,
+];
+
 // Router provider
 final routerProvider = Provider<GoRouter>((ref) {
+  // Create a listenable to trigger router refresh on auth changes
+  final authNotifier = _AuthChangeNotifier(ref);
+
   return GoRouter(
     initialLocation: RouteNames.welcome,
     debugLogDiagnostics: true,
+    refreshListenable: authNotifier,
     routes: [
       // Auth routes
       GoRoute(
@@ -53,7 +65,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'signup',
         builder: (context, state) => const SignupScreen(),
       ),
-      
+
       // Public wishlist route (for sharing)
       GoRoute(
         path: RouteNames.publicWishlist,
@@ -63,7 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return WishlistDetailScreen(slug: slug, isPublicView: true);
         },
       ),
-      
+
       // Main app shell with bottom navigation
       ShellRoute(
         builder: (context, state, child) => HomeShell(child: child),
@@ -117,7 +129,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          
+
           // Feed tab
           GoRoute(
             path: '/feed',
@@ -126,7 +138,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               child: FeedScreen(),
             ),
           ),
-          
+
           // Add wish tab (quick access)
           GoRoute(
             path: '/add',
@@ -135,7 +147,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               child: AddWishScreen(),
             ),
           ),
-          
+
           // Profile tab
           GoRoute(
             path: '/profile',
@@ -147,14 +159,56 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
     ],
-    
-    // Redirect logic
+
+    // Redirect logic based on authentication state
     redirect: (context, state) {
-      // TODO: Check auth state and redirect accordingly
-      // For now, allow all routes
-      return null;
+      final authState = ref.read(authProvider);
+      final currentPath = state.uri.path;
+      final isAuthRoute = _authRoutes.contains(currentPath);
+      final isPublicRoute = currentPath.startsWith('/p/');
+
+      // Allow public routes without auth
+      if (isPublicRoute) {
+        return null;
+      }
+
+      // Check auth state
+      return authState.maybeWhen(
+        // Still loading - don't redirect yet
+        initial: () => null,
+        loading: () => null,
+
+        // User is authenticated
+        authenticated: (_) {
+          // If on auth route, redirect to home
+          if (isAuthRoute) {
+            return RouteNames.home;
+          }
+          return null;
+        },
+
+        // User is not authenticated
+        unauthenticated: () {
+          // If not on auth route, redirect to welcome
+          if (!isAuthRoute) {
+            return RouteNames.welcome;
+          }
+          return null;
+        },
+
+        // Error state - treat as unauthenticated
+        error: (_) {
+          if (!isAuthRoute) {
+            return RouteNames.welcome;
+          }
+          return null;
+        },
+
+        // Fallback
+        orElse: () => null,
+      );
     },
-    
+
     // Error handling
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(title: const Text('Page Not Found')),
@@ -179,6 +233,17 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
   );
 });
+
+// ChangeNotifier to trigger router refresh on auth state changes
+class _AuthChangeNotifier extends ChangeNotifier {
+  _AuthChangeNotifier(this._ref) {
+    _ref.listen(authProvider, (_, __) {
+      notifyListeners();
+    });
+  }
+
+  final Ref _ref;
+}
 
 // Extension for easy navigation
 extension GoRouterExtensions on GoRouter {
