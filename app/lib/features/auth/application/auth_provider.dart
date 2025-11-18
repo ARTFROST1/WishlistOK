@@ -105,9 +105,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void clearError() {
-    if (state is _Error) {
-      state = const AuthState.unauthenticated();
-    }
+    state.maybeWhen(
+      error: (_) => state = const AuthState.unauthenticated(),
+      orElse: () {},
+    );
   }
 }
 

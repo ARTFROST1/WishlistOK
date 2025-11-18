@@ -67,9 +67,8 @@ class Api::V1::ClaimsController < Api::V1::BaseController
 
       # Include auth token for new guest users
       if @current_user != current_user
-        # Sign in the guest user to generate token
-        sign_in @current_user
-        token = request.env['warden-jwt_auth.token']
+        # Generate JWT token directly without session
+        token, _payload = Warden::JWTAuth::UserEncoder.new.call(@current_user, :user, nil)
         response_data[:auth] = {
           user: UserSerializer.new(@current_user).serializable_hash[:data][:attributes],
           token: token

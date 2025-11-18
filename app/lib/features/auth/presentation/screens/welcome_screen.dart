@@ -12,7 +12,10 @@ class WelcomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
-    final isLoading = authState is AuthStateLoading;
+    final isLoading = authState.maybeWhen(
+      loading: () => true,
+      orElse: () => false,
+    );
 
     // Listen for auth state changes (for guest mode)
     ref.listen<AuthState>(authProvider, (previous, next) {

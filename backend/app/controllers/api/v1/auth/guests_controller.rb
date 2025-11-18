@@ -10,9 +10,8 @@ class Api::V1::Auth::GuestsController < Api::V1::BaseController
     )
 
     if guest.persisted?
-      # Sign in the guest user to generate token
-      sign_in guest.user
-      token = request.env['warden-jwt_auth.token']
+      # Generate JWT token directly without session
+      token, _payload = Warden::JWTAuth::UserEncoder.new.call(guest.user, :user, nil)
 
       render_success(
         {
@@ -55,9 +54,8 @@ class Api::V1::Auth::GuestsController < Api::V1::BaseController
       first_name: upgrade_params[:first_name],
       last_name: upgrade_params[:last_name]
     )
-      # Generate new token for the upgraded user  
-      sign_in current_user.reload
-      token = request.env['warden-jwt_auth.token']
+      # Generate new JWT token for the upgraded user
+      token, _payload = Warden::JWTAuth::UserEncoder.new.call(current_user.reload, :user, nil)
 
       render_success(
         {
