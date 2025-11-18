@@ -62,35 +62,41 @@ class ApiClient {
   }
 }
 
-class _AuthInterceptor extends Interceptor {
+class _AuthInterceptor extends QueuedInterceptor {
   final FlutterSecureStorage _storage;
-  
+
   _AuthInterceptor(this._storage);
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     // Get token from secure storage
     String? token = await _storage.read(key: AppConfig.jwtTokenKey);
     token ??= await _storage.read(key: AppConfig.guestTokenKey);
-    
+
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
-    
-    super.onRequest(options, handler);
+
+    handler.next(options);
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // Handle 401 Unauthorized - clear tokens and redirect to auth
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    // Handle 401 Unauthorized - clear tokens
     if (err.response?.statusCode == 401) {
       await _storage.delete(key: AppConfig.jwtTokenKey);
       await _storage.delete(key: AppConfig.refreshTokenKey);
       await _storage.delete(key: AppConfig.guestTokenKey);
-      // TODO: Navigate to auth screen
+      // Auth state will be handled by the auth provider watching token changes
     }
-    
-    super.onError(err, handler);
+
+    handler.next(err);
   }
 }
 
@@ -113,12 +119,31 @@ class ApiException implements Exception {
         return ApiException('Connection timeout. Please try again.');
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
-        final message = error.response?.data?['message']?.toString() ?? 'Unknown server error';
-        return ApiException(message, statusCode: statusCode, data: error.response?.data);
+        final data = error.response?.data;
+
+        // Extract error message from backend response format
+        // Backend returns: {success: false, error: {message: "...", details: [...]}}
+        String message = 'Unknown server error';
+        if (data is Map<String, dynamic>) {
+          if (data['error'] is Map<String, dynamic>) {
+            final errorData = data['error'] as Map<String, dynamic>;
+            message = errorData['message']?.toString() ?? message;
+
+            // Append validation details if present
+            if (errorData['details'] is List && (errorData['details'] as List).isNotEmpty) {
+              final details = (errorData['details'] as List).join(', ');
+              message = '$message: $details';
+            }
+          } else if (data['message'] != null) {
+            message = data['message'].toString();
+          }
+        }
+
+        return ApiException(message, statusCode: statusCode, data: data);
       case DioExceptionType.cancel:
         return ApiException('Request was cancelled');
       case DioExceptionType.connectionError:
-        return ApiException('No internet connection');
+        return ApiException('No internet connection. Check your network.');
       case DioExceptionType.badCertificate:
         return ApiException('Invalid certificate');
       case DioExceptionType.unknown:

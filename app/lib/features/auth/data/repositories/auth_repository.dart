@@ -19,9 +19,10 @@ class AuthRepository {
           'email': email,
           'password': password,
         },
-      },);
+      });
 
-      return AuthResponse.fromJson(response.data);
+      // Backend returns {success: true, data: {user: {...}, token: "..."}}
+      return AuthResponse.fromJson(response.data['data']);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -34,16 +35,18 @@ class AuthRepository {
     String? lastName,
   }) async {
     try {
-      final response = await _dio.post('/auth', data: {
+      final response = await _dio.post('/auth/sign_up', data: {
         'user': {
           'email': email,
           'password': password,
+          'password_confirmation': password,
           'first_name': firstName,
           'last_name': lastName,
         },
-      },);
+      });
 
-      return AuthResponse.fromJson(response.data);
+      // Backend returns {success: true, data: {user: {...}, token: "..."}}
+      return AuthResponse.fromJson(response.data['data']);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -60,7 +63,8 @@ class AuthRepository {
   Future<AuthResponse> createGuestUser() async {
     try {
       final response = await _dio.post('/auth/guests');
-      return AuthResponse.fromJson(response.data);
+      // Backend returns {success: true, data: {user: {...}, token: "..."}}
+      return AuthResponse.fromJson(response.data['data']);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -68,8 +72,9 @@ class AuthRepository {
 
   Future<User> getCurrentUser() async {
     try {
-      final response = await _dio.get('/auth/me');
-      return User.fromJson(response.data['user']);
+      final response = await _dio.get('/users/me');
+      // Backend returns {success: true, data: {user: {...}}}
+      return User.fromJson(response.data['data']['user']);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
