@@ -1,10 +1,37 @@
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 class AppConfig {
   static const String appName = 'WishApp';
   static const String version = '1.0.0';
-  
-  // API Configuration
-  static const String apiBaseUrl = 'http://localhost:3000/api/v1';
-  static const String publicBaseUrl = 'http://localhost:3000';
+
+  // API Configuration - Platform-aware URL detection
+  static String get apiBaseUrl => '${_getBaseHost()}/api/v1';
+  static String get publicBaseUrl => _getBaseHost();
+
+  /// Returns the correct base URL for the current platform
+  /// - Android emulator: 10.0.2.2 (maps to host machine's localhost)
+  /// - iOS simulator: localhost (directly accessible)
+  /// - Web: localhost
+  static String _getBaseHost() {
+    if (kIsWeb) {
+      return 'http://localhost:3000';
+    }
+
+    try {
+      if (Platform.isAndroid) {
+        // Android emulator uses 10.0.2.2 to reach host machine
+        return 'http://10.0.2.2:3000';
+      } else if (Platform.isIOS) {
+        // iOS simulator can access localhost directly
+        return 'http://localhost:3000';
+      }
+    } catch (e) {
+      // Platform not available, fallback to localhost
+    }
+
+    return 'http://localhost:3000';
+  }
   
   // Storage Keys
   static const String jwtTokenKey = 'jwt_token';
