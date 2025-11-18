@@ -11,9 +11,9 @@ class WishesRepository {
 
   Future<List<Wish>> getWishesByWishlist(int wishlistId) async {
     try {
-      final response = await _dio.get('/wishlists/$wishlistId/wishes');
-      final List<dynamic> wishesJson = response.data['wishes'];
-      return wishesJson.map((json) => Wish.fromJson(json)).toList();
+      final response = await _dio.get<Map<String, dynamic>>('/wishlists/$wishlistId/wishes');
+      final List<dynamic> wishesJson = response.data!['wishes'] as List<dynamic>;
+      return wishesJson.map((json) => Wish.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -21,8 +21,8 @@ class WishesRepository {
 
   Future<Wish> getWish(int id) async {
     try {
-      final response = await _dio.get('/wishes/$id');
-      return Wish.fromJson(response.data['wish']);
+      final response = await _dio.get<Map<String, dynamic>>('/wishes/$id');
+      return Wish.fromJson(response.data!['wish'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -30,11 +30,14 @@ class WishesRepository {
 
   Future<ParseWishResponse> parseWish(String url) async {
     try {
-      final response = await _dio.post('/wishes/parse', data: {
-        'url': url,
-      },);
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/wishes/parse',
+        data: {
+          'url': url,
+        },
+      );
 
-      return ParseWishResponse.fromJson(response.data);
+      return ParseWishResponse.fromJson(response.data!);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -42,11 +45,14 @@ class WishesRepository {
 
   Future<Wish> createWish(CreateWishRequest request) async {
     try {
-      final response = await _dio.post('/wishes', data: {
-        'wish': request.toJson(),
-      },);
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/wishes',
+        data: {
+          'wish': request.toJson(),
+        },
+      );
 
-      return Wish.fromJson(response.data['wish']);
+      return Wish.fromJson(response.data!['wish'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -54,11 +60,14 @@ class WishesRepository {
 
   Future<Wish> updateWish(int id, CreateWishRequest request) async {
     try {
-      final response = await _dio.put('/wishes/$id', data: {
-        'wish': request.toJson(),
-      },);
+      final response = await _dio.put<Map<String, dynamic>>(
+        '/wishes/$id',
+        data: {
+          'wish': request.toJson(),
+        },
+      );
 
-      return Wish.fromJson(response.data['wish']);
+      return Wish.fromJson(response.data!['wish'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -66,7 +75,7 @@ class WishesRepository {
 
   Future<void> deleteWish(int id) async {
     try {
-      await _dio.delete('/wishes/$id');
+      await _dio.delete<void>('/wishes/$id');
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }

@@ -44,16 +44,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(AppTheme.spacing24),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.05),
+                color: AppTheme.primaryColor.withValues(alpha: 0.05),
               ),
               child: Column(
                 children: [
                   // Avatar
                   CircleAvatar(
                     radius: 50,
-                    backgroundColor: AppTheme.primaryColor.withOpacity(0.2),
+                    backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.2),
                     child: Text(
-                      '${_mockUser['firstName'][0]}${_mockUser['lastName'][0]}',
+                      '${(_mockUser['firstName'] as String)[0]}${(_mockUser['lastName'] as String)[0]}',
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: AppTheme.spacing4),
 
                   Text(
-                    _mockUser['email'],
+                    _mockUser['email'] as String,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showAccountSettings() {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (context) => DraggableScrollableSheet(
@@ -333,7 +333,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showSignOutDialog() {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Sign Out'),

@@ -214,7 +214,7 @@ class _CategoryCard extends StatelessWidget {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: (category['color'] as Color).withOpacity(0.1),
+                color: (category['color'] as Color).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppTheme.radius12),
               ),
               child: Icon(
@@ -225,7 +225,7 @@ class _CategoryCard extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.spacing8),
             Text(
-              category['name'],
+              category['name'] as String,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -262,7 +262,7 @@ class _CollectionCard extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: (collection['coverColor'] as Color).withOpacity(0.1),
+                  color: (collection['coverColor'] as Color).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radius8),
                 ),
                 child: Icon(
@@ -282,7 +282,7 @@ class _CollectionCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            collection['title'],
+                            collection['title'] as String,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
@@ -290,7 +290,7 @@ class _CollectionCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        if (collection['isSponsored']) ...[
+                        if (collection['isSponsored'] as bool) ...[
                           const SizedBox(width: AppTheme.spacing8),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -298,7 +298,7 @@ class _CollectionCard extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: AppTheme.warningColor.withOpacity(0.1),
+                              color: AppTheme.warningColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -317,7 +317,7 @@ class _CollectionCard extends StatelessWidget {
                     const SizedBox(height: AppTheme.spacing4),
 
                     Text(
-                      collection['description'],
+                      collection['description'] as String,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -377,7 +377,7 @@ class _TrendingItemCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.image, size: 32, color: Colors.grey[400]),
-                    if (item['isSponsored']) ...[
+                    if (item['isSponsored'] as bool) ...[
                       const SizedBox(height: AppTheme.spacing8),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -409,7 +409,7 @@ class _TrendingItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item['title'],
+                    item['title'] as String,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -420,7 +420,7 @@ class _TrendingItemCard extends StatelessWidget {
                   const SizedBox(height: AppTheme.spacing4),
 
                   Text(
-                    item['category'],
+                    item['category'] as String,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Colors.grey[600],
                     ),

@@ -64,9 +64,9 @@ class _WishDetailScreenState extends State<WishDetailScreen> {
               color: Colors.grey[100],
               child: _mockWish['imageUrl'] != null
                   ? Image.network(
-                      _mockWish['imageUrl'],
+                      _mockWish['imageUrl'] as String,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => 
+                      errorBuilder: (context, error, stackTrace) =>
                           _buildImagePlaceholder(),
                     )
                   : _buildImagePlaceholder(),
@@ -97,7 +97,7 @@ class _WishDetailScreenState extends State<WishDetailScreen> {
 
                   // Title
                   Text(
-                    _mockWish['title'],
+                    _mockWish['title'] as String,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       decoration: isAvailable ? null : TextDecoration.lineThrough,
@@ -123,7 +123,7 @@ class _WishDetailScreenState extends State<WishDetailScreen> {
                   if (_mockWish['description'] != null) ...[
                     const SizedBox(height: AppTheme.spacing16),
                     Text(
-                      _mockWish['description'],
+                      _mockWish['description'] as String,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
@@ -222,7 +222,7 @@ class _WishDetailScreenState extends State<WishDetailScreen> {
         vertical: AppTheme.spacing4,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radius8),
       ),
       child: Row(
@@ -257,11 +257,11 @@ class _WishDetailScreenState extends State<WishDetailScreen> {
             ),
             
             const SizedBox(height: AppTheme.spacing12),
-            
-            _buildInfoRow('Added by', _mockWish['ownerName']),
-            _buildInfoRow('Date added', _formatDate(_mockWish['createdAt'])),
+
+            _buildInfoRow('Added by', _mockWish['ownerName'] as String),
+            _buildInfoRow('Date added', _formatDate(_mockWish['createdAt'] as DateTime)),
             if (_mockWish['currency'] != null)
-              _buildInfoRow('Currency', _mockWish['currency']),
+              _buildInfoRow('Currency', _mockWish['currency'] as String),
           ],
         ),
       ),
@@ -320,7 +320,7 @@ class _WishDetailScreenState extends State<WishDetailScreen> {
   }
 
   void _handleClaim() {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Claim this wish?'),

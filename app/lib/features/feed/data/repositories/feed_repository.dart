@@ -11,8 +11,8 @@ class FeedRepository {
 
   Future<FeedResponse> getFeed() async {
     try {
-      final response = await _dio.get('/ideas');
-      return FeedResponse.fromJson(response.data);
+      final response = await _dio.get<Map<String, dynamic>>('/ideas');
+      return FeedResponse.fromJson(response.data!);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -20,9 +20,9 @@ class FeedRepository {
 
   Future<List<FeedCategory>> getCategories() async {
     try {
-      final response = await _dio.get('/ideas/categories');
-      final List<dynamic> categoriesJson = response.data['categories'];
-      return categoriesJson.map((json) => FeedCategory.fromJson(json)).toList();
+      final response = await _dio.get<Map<String, dynamic>>('/ideas/categories');
+      final List<dynamic> categoriesJson = response.data!['categories'] as List<dynamic>;
+      return categoriesJson.map((json) => FeedCategory.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -30,9 +30,9 @@ class FeedRepository {
 
   Future<List<FeedCollection>> getFeaturedCollections() async {
     try {
-      final response = await _dio.get('/ideas/featured');
-      final List<dynamic> collectionsJson = response.data['collections'];
-      return collectionsJson.map((json) => FeedCollection.fromJson(json)).toList();
+      final response = await _dio.get<Map<String, dynamic>>('/ideas/featured');
+      final List<dynamic> collectionsJson = response.data!['collections'] as List<dynamic>;
+      return collectionsJson.map((json) => FeedCollection.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -40,8 +40,8 @@ class FeedRepository {
 
   Future<FeedCollection> getCollection(int id) async {
     try {
-      final response = await _dio.get('/ideas/collections/$id');
-      return FeedCollection.fromJson(response.data['collection']);
+      final response = await _dio.get<Map<String, dynamic>>('/ideas/collections/$id');
+      return FeedCollection.fromJson(response.data!['collection'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -49,9 +49,9 @@ class FeedRepository {
 
   Future<List<FeedItem>> getTrendingItems() async {
     try {
-      final response = await _dio.get('/ideas/trending');
-      final List<dynamic> itemsJson = response.data['items'];
-      return itemsJson.map((json) => FeedItem.fromJson(json)).toList();
+      final response = await _dio.get<Map<String, dynamic>>('/ideas/trending');
+      final List<dynamic> itemsJson = response.data!['items'] as List<dynamic>;
+      return itemsJson.map((json) => FeedItem.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -59,9 +59,9 @@ class FeedRepository {
 
   Future<List<FeedItem>> getItemsByCategory(int categoryId) async {
     try {
-      final response = await _dio.get('/ideas/categories/$categoryId/items');
-      final List<dynamic> itemsJson = response.data['items'];
-      return itemsJson.map((json) => FeedItem.fromJson(json)).toList();
+      final response = await _dio.get<Map<String, dynamic>>('/ideas/categories/$categoryId/items');
+      final List<dynamic> itemsJson = response.data!['items'] as List<dynamic>;
+      return itemsJson.map((json) => FeedItem.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }

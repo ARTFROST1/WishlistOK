@@ -155,7 +155,7 @@ class _WishlistCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppTheme.radius16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -185,7 +185,7 @@ class _WishlistCard extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withOpacity(0.7),
+                      Colors.black.withValues(alpha: 0.7),
                     ],
                     stops: const [0.4, 1.0],
                   ),
@@ -199,10 +199,10 @@ class _WishlistCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: _buildVisibilityIcon(wishlist['visibility']),
+                  child: _buildVisibilityIcon(wishlist['visibility'] as String),
                 ),
               ),
 
@@ -217,7 +217,7 @@ class _WishlistCard extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      wishlist['title'],
+                      wishlist['title'] as String,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -234,7 +234,7 @@ class _WishlistCard extends StatelessWidget {
                     Text(
                       '${wishlist['wishesCount']} wishes',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                         fontSize: 12,
                       ),
                     ),
@@ -250,7 +250,7 @@ class _WishlistCard extends StatelessWidget {
 
   Widget _buildPlaceholder() {
     return Container(
-      color: AppTheme.primaryColor.withOpacity(0.3),
+      color: AppTheme.primaryColor.withValues(alpha: 0.3),
       child: const Center(
         child: Icon(
           Icons.card_giftcard,

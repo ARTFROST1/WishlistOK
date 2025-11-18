@@ -309,34 +309,34 @@ class _AddWishScreenState extends State<AddWishScreen> with TickerProviderStateM
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(AppTheme.radius8),
                           child: Image.network(
-                            _parsedData!['imageUrl'],
+                            _parsedData!['imageUrl'] as String,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => 
+                            errorBuilder: (context, error, stackTrace) =>
                                 const Icon(Icons.image, color: Colors.grey),
                           ),
                         )
                       : const Icon(Icons.image, color: Colors.grey),
                 ),
-                
+
                 const SizedBox(width: AppTheme.spacing16),
-                
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _parsedData!['title'] ?? 'No title',
+                        (_parsedData!['title'] as String?) ?? 'No title',
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      
+
                       if (_parsedData!['description'] != null) ...[
                         const SizedBox(height: AppTheme.spacing4),
                         Text(
-                          _parsedData!['description'],
+                          _parsedData!['description'] as String,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.grey[600],
                           ),
@@ -384,7 +384,7 @@ class _AddWishScreenState extends State<AddWishScreen> with TickerProviderStateM
 
     try {
       // TODO: Implement actual URL parsing API call
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      await Future<void>.delayed(const Duration(seconds: 2)); // Simulate API call
       
       // Mock parsed data
       setState(() {
@@ -436,7 +436,7 @@ class _AddWishScreenState extends State<AddWishScreen> with TickerProviderStateM
 
     try {
       // TODO: Implement actual save logic
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      await Future<void>.delayed(const Duration(seconds: 1)); // Simulate API call
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

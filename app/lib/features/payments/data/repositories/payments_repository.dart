@@ -15,14 +15,18 @@ class PaymentsRepository {
     int perPage = 20,
   }) async {
     try {
-      final response = await _dio.get('/payments', queryParameters: {
-        'page': page,
-        'per_page': perPage,
-      },);
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/payments',
+        queryParameters: {
+          'page': page,
+          'per_page': perPage,
+        },
+      );
 
-      final List<dynamic> paymentsData = response.data['data'] ?? [];
+      final List<dynamic> paymentsData =
+          (response.data!['data'] as List<dynamic>?) ?? [];
       return paymentsData
-          .map((json) => Payment.fromJson(json['attributes']))
+          .map((json) => Payment.fromJson(json['attributes'] as Map<String, dynamic>))
           .toList();
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
@@ -32,8 +36,10 @@ class PaymentsRepository {
   // Get payment details
   Future<Payment> getPayment(int id) async {
     try {
-      final response = await _dio.get('/payments/$id');
-      return Payment.fromJson(response.data['data']['attributes']);
+      final response = await _dio.get<Map<String, dynamic>>('/payments/$id');
+      return Payment.fromJson(
+        response.data!['data']['attributes'] as Map<String, dynamic>,
+      );
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -47,7 +53,7 @@ class PaymentsRepository {
     String? paymentMethod,
   }) async {
     try {
-      final response = await _dio.post(
+      final response = await _dio.post<Map<String, dynamic>>(
         '/wishes/$wishId/contribute',
         data: {
           'payment': {
@@ -58,7 +64,9 @@ class PaymentsRepository {
         },
       );
 
-      return Payment.fromJson(response.data['data']['attributes']);
+      return Payment.fromJson(
+        response.data!['data']['attributes'] as Map<String, dynamic>,
+      );
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -67,14 +75,19 @@ class PaymentsRepository {
   // Get contributions for a wish
   Future<ContributionResponse> getWishContributions(int wishId) async {
     try {
-      final response = await _dio.get('/wishes/$wishId/contributions');
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/wishes/$wishId/contributions',
+      );
 
-      final List<dynamic> paymentsData = response.data['data'] ?? [];
+      final List<dynamic> paymentsData =
+          (response.data!['data'] as List<dynamic>?) ?? [];
       final payments = paymentsData
-          .map((json) => Payment.fromJson(json['attributes']))
+          .map((json) => Payment.fromJson(json['attributes'] as Map<String, dynamic>))
           .toList();
 
-      final stats = ContributionStats.fromJson(response.data['meta']);
+      final stats = ContributionStats.fromJson(
+        response.data!['meta'] as Map<String, dynamic>,
+      );
 
       return ContributionResponse(
         contributions: payments,
@@ -88,12 +101,14 @@ class PaymentsRepository {
   // Refund a payment
   Future<Payment> refundPayment(int paymentId, {double? amount}) async {
     try {
-      final response = await _dio.post(
+      final response = await _dio.post<Map<String, dynamic>>(
         '/payments/$paymentId/refund',
-        data: if (amount != null) {'amount': amount},
+        data: amount != null ? {'amount': amount} : null,
       );
 
-      return Payment.fromJson(response.data['data']['attributes']);
+      return Payment.fromJson(
+        response.data!['data']['attributes'] as Map<String, dynamic>,
+      );
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }

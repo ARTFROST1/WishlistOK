@@ -91,7 +91,7 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_mockWishlist['title']),
+        title: Text(_mockWishlist['title'] as String),
         actions: [
           if (!widget.isPublicView) ...[
             IconButton(
@@ -170,7 +170,7 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
       children: [
         if (_mockWishlist['description'] != null) ...[
           Text(
-            _mockWishlist['description'],
+            _mockWishlist['description'] as String,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: AppTheme.spacing12),
@@ -196,7 +196,7 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
                   color: (daysLeft <= 7
                           ? AppTheme.warningColor
                           : AppTheme.successColor)
-                      .withOpacity(0.1),
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -295,7 +295,7 @@ class _WishCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppTheme.radius16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -320,7 +320,7 @@ class _WishCard extends StatelessWidget {
               // Claimed overlay
               if (!isAvailable)
                 Container(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                 ),
 
               // Gradient overlay
@@ -331,7 +331,7 @@ class _WishCard extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withValues(alpha: 0.8),
                     ],
                     stops: const [0.5, 1.0],
                   ),
@@ -403,7 +403,7 @@ class _WishCard extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      wish['title'],
+                      wish['title'] as String,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -421,9 +421,9 @@ class _WishCard extends StatelessWidget {
                     // Price
                     if (wish['price'] != null)
                       Text(
-                        '\$${wish['price'].toStringAsFixed(0)}',
+                        '\$${(wish['price'] as num).toStringAsFixed(0)}',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
