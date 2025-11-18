@@ -35,7 +35,7 @@ class PaymentSerializer
       id: user.id,
       name: "#{user.first_name} #{user.last_name}".strip,
       avatar_url: user.avatar_url,
-      is_guest: user.user_type == 'guest'
+      is_guest: user.guest?
     }
   end
 

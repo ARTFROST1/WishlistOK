@@ -16,7 +16,7 @@ class Api::V1::ClaimsController < Api::V1::BaseController
     
     # Filter based on surprise mode for owner visibility
     visible_claims = @claims.select do |claim|
-      !claim.is_surprise || claim.status == 'purchased'
+      !claim.is_surprise || claim.purchased?
     end
 
     render_success({

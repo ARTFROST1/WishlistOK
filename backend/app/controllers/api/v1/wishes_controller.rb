@@ -117,7 +117,7 @@ class Api::V1::WishesController < Api::V1::BaseController
           status: :unprocessable_entity
         )
       end
-    rescue => e
+    rescue StandardError => e
       render_error(
         'Parsing service unavailable',
         details: [e.message],

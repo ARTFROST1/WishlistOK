@@ -43,11 +43,11 @@ class Wish < ApplicationRecord
   end
 
   def claimed?
-    status.in?(['claimed', 'purchased'])
+    status&.to_sym&.in?([:claimed, :purchased])
   end
 
   def purchased?
-    status == 'purchased'
+    status&.to_sym == :purchased
   end
 
   def formatted_price

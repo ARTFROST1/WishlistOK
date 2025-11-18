@@ -16,7 +16,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV !== 'production',
     rollupOptions: {
       input: {
         background: resolve(__dirname, 'src/background.ts'),

@@ -68,20 +68,26 @@ class _AuthInterceptor extends Interceptor {
   _AuthInterceptor(this._storage);
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     // Get token from secure storage
     String? token = await _storage.read(key: AppConfig.jwtTokenKey);
     token ??= await _storage.read(key: AppConfig.guestTokenKey);
-    
+
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
-    
-    super.onRequest(options, handler);
+
+    handler.next(options);
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     // Handle 401 Unauthorized - clear tokens and redirect to auth
     if (err.response?.statusCode == 401) {
       await _storage.delete(key: AppConfig.jwtTokenKey);
@@ -89,8 +95,8 @@ class _AuthInterceptor extends Interceptor {
       await _storage.delete(key: AppConfig.guestTokenKey);
       // TODO: Navigate to auth screen
     }
-    
-    super.onError(err, handler);
+
+    handler.next(err);
   }
 }
 

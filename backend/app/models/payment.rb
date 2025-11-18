@@ -59,7 +59,7 @@ class Payment < ApplicationRecord
     update!(
       status: :succeeded,
       confirmed_at: Time.current,
-      provider_response: provider_response.merge(provider_data)
+      provider_response: (provider_response || {}).merge(provider_data)
     )
   end
 
@@ -67,7 +67,7 @@ class Payment < ApplicationRecord
     update!(
       status: :failed,
       failed_at: Time.current,
-      metadata: metadata.merge(error: error_message)
+      metadata: (metadata || {}).merge(error: error_message)
     )
   end
 

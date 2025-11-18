@@ -2,17 +2,57 @@ import browser from 'webextension-polyfill';
 
 console.log('WishApp Extension: Content script loaded');
 
+// Type definitions
+interface PageData {
+  url: string;
+  title: string;
+  description: string;
+  image: string;
+  price: string;
+  timestamp: number;
+}
+
+interface ContentMessage {
+  type: 'GET_PAGE_DATA';
+}
+
+interface ContentResponse {
+  success: boolean;
+  data?: PageData;
+  error?: string;
+}
+
 // Listen for messages from popup
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'GET_PAGE_DATA') {
-    const pageData = extractPageData();
-    sendResponse(pageData);
+browser.runtime.onMessage.addListener(
+  (
+    message: ContentMessage,
+    sender: browser.Runtime.MessageSender
+  ): ContentResponse | undefined => {
+    // Only respond to messages from the extension itself
+    if (sender.id !== browser.runtime.id) {
+      console.warn('Ignoring message from external sender');
+      return { success: false, error: 'Unauthorized' };
+    }
+
+    try {
+      if (message.type === 'GET_PAGE_DATA') {
+        const pageData = extractPageData();
+        return { success: true, data: pageData };
+      }
+      return { success: false, error: 'Unknown message type' };
+    } catch (error) {
+      console.error('Content script error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
   }
-});
+);
 
 // Extract Open Graph and product metadata from the current page
-function extractPageData() {
-  const data = {
+function extractPageData(): PageData {
+  const data: PageData = {
     url: window.location.href,
     title: document.title,
     description: '',

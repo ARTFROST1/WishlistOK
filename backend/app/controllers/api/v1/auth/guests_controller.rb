@@ -29,7 +29,8 @@ class Api::V1::Auth::GuestsController < Api::V1::BaseController
         status: :unprocessable_entity
       )
     end
-  rescue => e
+  rescue StandardError => e
+    Rails.logger.error("Guest creation failed: #{e.message}")
     render_error('Internal server error', status: :internal_server_error)
   end
 

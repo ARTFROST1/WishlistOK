@@ -90,7 +90,7 @@ class PaymentsRepository {
     try {
       final response = await _dio.post(
         '/payments/$paymentId/refund',
-        data: ,if (amount != null) {'amount': amount},
+        data: amount != null ? {'amount': amount} : null,
       );
 
       return Payment.fromJson(response.data['data']['attributes']);

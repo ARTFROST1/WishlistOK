@@ -22,8 +22,8 @@ class AsyncValueWidget<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return asyncValue.when(
       data: data,
-      error: error ?? (error, stackTrace) => ErrorDisplayWidget(
-        message: error.toString(),
+      error: error ?? (err, stackTrace) => ErrorDisplayWidget(
+        message: err.toString(),
         onRetry: () {
           // The parent widget should handle retry logic
         },
