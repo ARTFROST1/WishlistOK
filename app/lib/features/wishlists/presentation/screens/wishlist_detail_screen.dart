@@ -24,7 +24,7 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
   final Map<String, dynamic> _mockWishlist = {
     'id': 1,
     'title': 'Birthday Wishlist 2024',
-    'description': 'My 25th birthday coming up! 🎉',
+    'description': 'My 25th birthday coming up!',
     'eventDate': DateTime(2024, 12, 15),
     'visibility': 'link_only',
     'shareUrl': 'https://wishapp.com/p/birthday-2024-abc123',
@@ -33,34 +33,55 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
   final List<Map<String, dynamic>> _mockWishes = [
     {
       'id': 1,
-      'title': 'Wireless Noise-Cancelling Headphones',
-      'description': 'Perfect for work and travel',
-      'imageUrl': null,
+      'title': 'Wireless Headphones',
+      'imageUrl': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
       'price': 299.99,
       'currency': 'USD',
-      'productUrl': 'https://example.com/headphones',
       'status': 'available',
       'canClaim': true,
     },
     {
       'id': 2,
-      'title': 'Smart Fitness Watch',
-      'description': 'Track workouts and health metrics',
-      'imageUrl': null,
+      'title': 'Smart Watch',
+      'imageUrl': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
       'price': 249.99,
       'currency': 'USD',
-      'productUrl': 'https://example.com/watch',
       'status': 'claimed',
       'canClaim': false,
     },
     {
       'id': 3,
-      'title': 'Coffee Table Book - Photography',
-      'description': 'Beautiful landscape photography collection',
-      'imageUrl': null,
-      'price': 45.00,
+      'title': 'Running Shoes',
+      'imageUrl': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
+      'price': 129.00,
       'currency': 'USD',
-      'productUrl': 'https://example.com/book',
+      'status': 'available',
+      'canClaim': true,
+    },
+    {
+      'id': 4,
+      'title': 'Backpack',
+      'imageUrl': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400',
+      'price': 89.99,
+      'currency': 'USD',
+      'status': 'available',
+      'canClaim': true,
+    },
+    {
+      'id': 5,
+      'title': 'Sunglasses',
+      'imageUrl': 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400',
+      'price': 159.00,
+      'currency': 'USD',
+      'status': 'available',
+      'canClaim': true,
+    },
+    {
+      'id': 6,
+      'title': 'Coffee Machine',
+      'imageUrl': null,
+      'price': 199.00,
+      'currency': 'USD',
       'status': 'available',
       'canClaim': true,
     },
@@ -68,9 +89,6 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final availableWishes = _mockWishes.where((w) => w['status'] == 'available').toList();
-    final claimedWishes = _mockWishes.where((w) => w['status'] != 'available').toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_mockWishlist['title']),
@@ -89,104 +107,53 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          // Header info
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.spacing16),
-              child: _buildHeader(),
-            ),
-          ),
-          
-          // Available wishes
-          if (availableWishes.isNotEmpty) ...[
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.card_giftcard, color: AppTheme.successColor),
-                    const SizedBox(width: AppTheme.spacing8),
-                    Text(
-                      'Available (${availableWishes.length})',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+      body: _mockWishes.isEmpty
+          ? _buildEmptyState()
+          : CustomScrollView(
+              slivers: [
+                // Header info
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacing16),
+                    child: _buildHeader(),
+                  ),
                 ),
-              ),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacing8)),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => Padding(
+
+                // Wishes grid
+                SliverPadding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.spacing16,
-                    vertical: AppTheme.spacing4,
                   ),
-                  child: _WishCard(
-                    wish: availableWishes[index],
-                    isPublicView: widget.isPublicView,
-                  ),
-                ),
-                childCount: availableWishes.length,
-              ),
-            ),
-          ],
-          
-          // Claimed wishes
-          if (claimedWishes.isNotEmpty) ...[
-            const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacing24)),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.check_circle, color: AppTheme.primaryColor),
-                    const SizedBox(width: AppTheme.spacing8),
-                    Text(
-                      'Claimed (${claimedWishes.length})',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: AppTheme.spacing12,
+                      mainAxisSpacing: AppTheme.spacing12,
+                      childAspectRatio: 0.75,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacing8)),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacing16,
-                    vertical: AppTheme.spacing4,
-                  ),
-                  child: _WishCard(
-                    wish: claimedWishes[index],
-                    isPublicView: widget.isPublicView,
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final wish = _mockWishes[index];
+                        return _WishCard(
+                          wish: wish,
+                          isPublicView: widget.isPublicView,
+                          onTap: () => context.go('/wishes/${wish['id']}'),
+                        );
+                      },
+                      childCount: _mockWishes.length,
+                    ),
                   ),
                 ),
-                childCount: claimedWishes.length,
-              ),
+
+                // Bottom padding
+                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              ],
             ),
-          ],
-          
-          // Empty state
-          if (_mockWishes.isEmpty)
-            SliverFillRemaining(
-              child: _buildEmptyState(),
-            ),
-            
-          // Bottom padding
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-        ],
-      ),
-      floatingActionButton: !widget.isPublicView 
+      floatingActionButton: !widget.isPublicView
           ? FloatingActionButton.extended(
-              onPressed: () => context.go('/wishlists/${_mockWishlist['id']}/add-wish'),
+              onPressed: () =>
+                  context.go('/wishlists/${_mockWishlist['id']}/add-wish'),
               icon: const Icon(Icons.add),
               label: const Text('Add Wish'),
             )
@@ -206,36 +173,43 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
             _mockWishlist['description'],
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.spacing16),
+          const SizedBox(height: AppTheme.spacing12),
         ],
-        
         Row(
           children: [
-            const Icon(Icons.event, color: AppTheme.primaryColor),
+            Icon(Icons.event, size: 18, color: Colors.grey[600]),
             const SizedBox(width: AppTheme.spacing8),
             Text(
               '${eventDate.day}/${eventDate.month}/${eventDate.year}',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600],
+                  ),
             ),
-            const SizedBox(width: AppTheme.spacing16),
             if (daysLeft >= 0) ...[
+              const SizedBox(width: AppTheme.spacing12),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.spacing8,
-                  vertical: AppTheme.spacing4,
+                  horizontal: 8,
+                  vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: (daysLeft <= 7 ? AppTheme.warningColor : AppTheme.successColor).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppTheme.radius8),
+                  color: (daysLeft <= 7
+                          ? AppTheme.warningColor
+                          : AppTheme.successColor)
+                      .withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  daysLeft == 0 
-                      ? 'Today!' 
-                      : daysLeft == 1 
+                  daysLeft == 0
+                      ? 'Today!'
+                      : daysLeft == 1
                           ? 'Tomorrow'
-                          : '$daysLeft days left',
+                          : '$daysLeft days',
                   style: TextStyle(
-                    color: daysLeft <= 7 ? AppTheme.warningColor : AppTheme.successColor,
+                    color: daysLeft <= 7
+                        ? AppTheme.warningColor
+                        : AppTheme.successColor,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -263,18 +237,18 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
             Text(
               'No wishes yet',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.grey,
-              ),
+                    color: Colors.grey,
+                  ),
             ),
             const SizedBox(height: AppTheme.spacing8),
             Text(
-              widget.isPublicView 
-                  ? 'This wishlist is empty' 
+              widget.isPublicView
+                  ? 'This wishlist is empty'
                   : 'Add your first wish to get started',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.grey,
-              ),
+                    color: Colors.grey,
+                  ),
             ),
           ],
         ),
@@ -301,116 +275,177 @@ class _WishlistDetailScreenState extends State<WishlistDetailScreen> {
 class _WishCard extends StatelessWidget {
   final Map<String, dynamic> wish;
   final bool isPublicView;
+  final VoidCallback onTap;
 
   const _WishCard({
     required this.wish,
     required this.isPublicView,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final isAvailable = wish['status'] == 'available';
-    
-    return Card(
-      child: InkWell(
-        onTap: () => context.go('/wishes/${wish['id']}'),
-        borderRadius: BorderRadius.circular(AppTheme.radius12),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacing12),
-          child: Row(
+    final imageUrl = wish['imageUrl'] as String?;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppTheme.radius16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppTheme.radius16),
+          child: Stack(
+            fit: StackFit.expand,
             children: [
-              // Image placeholder
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(AppTheme.radius8),
+              // Background image or placeholder
+              if (imageUrl != null)
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildPlaceholder(),
+                )
+              else
+                _buildPlaceholder(),
+
+              // Claimed overlay
+              if (!isAvailable)
+                Container(
+                  color: Colors.black.withOpacity(0.4),
                 ),
-                child: const Icon(
-                  Icons.image,
-                  color: Colors.grey,
+
+              // Gradient overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.8),
+                    ],
+                    stops: const [0.5, 1.0],
+                  ),
                 ),
               ),
-              
-              const SizedBox(width: AppTheme.spacing12),
-              
-              // Content
-              Expanded(
+
+              // Status badge (top right)
+              if (!isAvailable)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'Claimed',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+
+              // Claim button for public view
+              if (isPublicView && wish['canClaim'] == true && isAvailable)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Material(
+                    color: AppTheme.primaryColor,
+                    borderRadius: BorderRadius.circular(6),
+                    child: InkWell(
+                      onTap: () => _handleClaim(context),
+                      borderRadius: BorderRadius.circular(6),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          'Claim',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+              // Content at bottom
+              Positioned(
+                left: 10,
+                right: 10,
+                bottom: 10,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Title
                     Text(
                       wish['title'],
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        decoration: isAvailable ? null : TextDecoration.lineThrough,
+                        height: 1.2,
+                        decoration:
+                            isAvailable ? null : TextDecoration.lineThrough,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    
-                    if (wish['description'] != null) ...[
-                      const SizedBox(height: AppTheme.spacing4),
+
+                    const SizedBox(height: 4),
+
+                    // Price
+                    if (wish['price'] != null)
                       Text(
-                        wish['description'],
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
+                        '\$${wish['price'].toStringAsFixed(0)}',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                    
-                    const SizedBox(height: AppTheme.spacing8),
-                    
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (wish['price'] != null)
-                          Text(
-                            '\$${wish['price'].toStringAsFixed(2)}',
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: AppTheme.primaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        
-                        if (isPublicView && wish['canClaim'] && isAvailable)
-                          ElevatedButton(
-                            onPressed: () => _handleClaim(context),
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(60, 32),
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                            ),
-                            child: const Text('Claim', style: TextStyle(fontSize: 12)),
-                          )
-                        else if (!isAvailable)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.spacing8,
-                              vertical: AppTheme.spacing4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(AppTheme.radius8),
-                            ),
-                            child: Text(
-                              'Claimed',
-                              style: TextStyle(
-                                color: AppTheme.primaryColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
                   ],
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: Colors.grey[300],
+      child: const Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: 40,
+          color: Colors.grey,
         ),
       ),
     );
