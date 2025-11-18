@@ -15,28 +15,29 @@ class _WishlistsScreenState extends State<WishlistsScreen> {
     {
       'id': 1,
       'title': 'Birthday Wishlist 2024',
-      'eventDate': DateTime(2024, 12, 15),
       'wishesCount': 8,
-      'availableCount': 5,
-      'claimedCount': 3,
+      'coverImageUrl': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
       'visibility': 'link_only',
     },
     {
       'id': 2,
       'title': 'Wedding Registry',
-      'eventDate': DateTime(2024, 6, 20),
       'wishesCount': 15,
-      'availableCount': 12,
-      'claimedCount': 3,
+      'coverImageUrl': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
       'visibility': 'public',
     },
     {
       'id': 3,
       'title': 'Christmas 2024',
-      'eventDate': DateTime(2024, 12, 25),
       'wishesCount': 6,
-      'availableCount': 6,
-      'claimedCount': 0,
+      'coverImageUrl': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
+      'visibility': 'private',
+    },
+    {
+      'id': 4,
+      'title': 'Home Office Setup',
+      'wishesCount': 4,
+      'coverImageUrl': null,
       'visibility': 'private',
     },
   ];
@@ -88,16 +89,16 @@ class _WishlistsScreenState extends State<WishlistsScreen> {
             Text(
               'No Wishlists Yet',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: AppTheme.spacing8),
             Text(
               'Create your first wishlist to start collecting and sharing your favorite items',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
             ),
             const SizedBox(height: AppTheme.spacing32),
             ElevatedButton.icon(
@@ -119,7 +120,7 @@ class _WishlistsScreenState extends State<WishlistsScreen> {
           crossAxisCount: 2,
           crossAxisSpacing: AppTheme.spacing12,
           mainAxisSpacing: AppTheme.spacing12,
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.8,
         ),
         itemCount: _mockWishlists.length,
         itemBuilder: (context, index) {
@@ -145,86 +146,100 @@ class _WishlistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventDate = wishlist['eventDate'] as DateTime;
-    final daysLeft = eventDate.difference(DateTime.now()).inDays;
-    
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppTheme.radius12),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacing12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final imageUrl = wishlist['coverImageUrl'] as String?;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppTheme.radius16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppTheme.radius16),
+          child: Stack(
+            fit: StackFit.expand,
             children: [
-              // Header with visibility icon
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildVisibilityIcon(wishlist['visibility']),
-                  IconButton(
-                    icon: const Icon(Icons.more_vert, size: 16),
-                    onPressed: () {
-                      // TODO: Show options menu
-                    },
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
+              // Background image or placeholder
+              if (imageUrl != null)
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildPlaceholder(),
+                )
+              else
+                _buildPlaceholder(),
+
+              // Gradient overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.7),
+                    ],
+                    stops: const [0.4, 1.0],
                   ),
-                ],
+                ),
               ),
-              
-              const SizedBox(height: AppTheme.spacing8),
-              
-              // Title
-              Text(
-                wishlist['title'],
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+
+              // Visibility icon (top right)
+              Positioned(
+                top: 12,
+                right: 12,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: _buildVisibilityIcon(wishlist['visibility']),
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
-              
-              const SizedBox(height: AppTheme.spacing4),
-              
-              // Event date and countdown
-              if (daysLeft >= 0) ...[
-                Text(
-                  daysLeft == 0 
-                      ? 'Today!' 
-                      : daysLeft == 1 
-                          ? 'Tomorrow'
-                          : '$daysLeft days left',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: daysLeft <= 7 ? AppTheme.warningColor : Colors.grey[600],
-                    fontWeight: daysLeft <= 7 ? FontWeight.w600 : null,
-                  ),
-                ),
-              ] else ...[
-                Text(
-                  'Event passed',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[500],
-                  ),
-                ),
-              ],
-              
-              const Spacer(),
-              
-              // Stats
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildStatChip(
-                    '${wishlist['availableCount']} available',
-                    AppTheme.successColor,
-                  ),
-                  if (wishlist['claimedCount'] > 0)
-                    _buildStatChip(
-                      '${wishlist['claimedCount']} claimed',
-                      AppTheme.primaryColor,
+
+              // Content at bottom
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Title
+                    Text(
+                      wishlist['title'],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                ],
+
+                    const SizedBox(height: 4),
+
+                    // Wishes count
+                    Text(
+                      '${wishlist['wishesCount']} wishes',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -233,45 +248,33 @@ class _WishlistCard extends StatelessWidget {
     );
   }
 
-  Widget _buildVisibilityIcon(String visibility) {
-    IconData icon;
-    Color color;
-    
-    switch (visibility) {
-      case 'public':
-        icon = Icons.public;
-        color = AppTheme.successColor;
-        break;
-      case 'private':
-        icon = Icons.lock;
-        color = AppTheme.errorColor;
-        break;
-      default:
-        icon = Icons.link;
-        color = AppTheme.primaryColor;
-    }
-    
-    return Icon(icon, size: 16, color: color);
-  }
-
-  Widget _buildStatChip(String text, Color color) {
+  Widget _buildPlaceholder() {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacing8,
-        vertical: AppTheme.spacing4,
-      ),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppTheme.radius8),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
+      color: AppTheme.primaryColor.withOpacity(0.3),
+      child: const Center(
+        child: Icon(
+          Icons.card_giftcard,
+          size: 48,
+          color: Colors.white54,
         ),
       ),
     );
+  }
+
+  Widget _buildVisibilityIcon(String visibility) {
+    IconData icon;
+
+    switch (visibility) {
+      case 'public':
+        icon = Icons.public;
+        break;
+      case 'private':
+        icon = Icons.lock;
+        break;
+      default:
+        icon = Icons.link;
+    }
+
+    return Icon(icon, size: 16, color: Colors.white);
   }
 }
