@@ -22,7 +22,7 @@ class AuthRepository {
       });
 
       // Backend returns {success: true, data: {user: {...}, token: "..."}}
-      return AuthResponse.fromJson(response.data['data']);
+      return AuthResponse.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -46,7 +46,7 @@ class AuthRepository {
       });
 
       // Backend returns {success: true, data: {user: {...}, token: "..."}}
-      return AuthResponse.fromJson(response.data['data']);
+      return AuthResponse.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -64,7 +64,7 @@ class AuthRepository {
     try {
       final response = await _dio.post('/auth/guests');
       // Backend returns {success: true, data: {user: {...}, token: "..."}}
-      return AuthResponse.fromJson(response.data['data']);
+      return AuthResponse.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -74,7 +74,7 @@ class AuthRepository {
     try {
       final response = await _dio.get('/users/me');
       // Backend returns {success: true, data: {user: {...}}}
-      return User.fromJson(response.data['data']['user']);
+      return User.fromJson(response.data['data']['user'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
@@ -83,7 +83,7 @@ class AuthRepository {
   Future<AuthResponse> refreshToken() async {
     try {
       final response = await _dio.post('/auth/refresh');
-      return AuthResponse.fromJson(response.data);
+      return AuthResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
     }
