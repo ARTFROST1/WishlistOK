@@ -8,9 +8,9 @@ class Public::WishlistsController < ApplicationController
     @wishes = @wishlist.wishes.active.includes(:claims, :active_claim)
                       .order(priority: :desc, created_at: :desc)
     
-    # Separate available and claimed wishes for display
-    @available_wishes = @wishes.select(&:available?)
-    @claimed_wishes = @wishes.select(&:claimed?)
+    # Separate available and claimed wishes for display using database queries
+    @available_wishes = @wishes.where(status: :available)
+    @claimed_wishes = @wishes.where(status: [:claimed, :purchased])
 
     # SEO and social meta data
     @page_title = "#{@wishlist.title} - WishApp"

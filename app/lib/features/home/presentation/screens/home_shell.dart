@@ -11,13 +11,7 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
     switch (index) {
       case 0:
         context.go('/');
@@ -34,25 +28,30 @@ class _HomeShellState extends State<HomeShell> {
     }
   }
 
+  int _getSelectedIndex(String location) {
+    if (location == '/') {
+      return 0;
+    } else if (location.startsWith('/feed')) {
+      return 1;
+    } else if (location.startsWith('/add')) {
+      return 2;
+    } else if (location.startsWith('/profile')) {
+      return 3;
+    }
+    return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Update selected index based on current location
+    // Compute selected index based on current location without modifying state
     final location = GoRouterState.of(context).uri.path;
-    if (location == '/') {
-      _selectedIndex = 0;
-    } else if (location.startsWith('/feed')) {
-      _selectedIndex = 1;
-    } else if (location.startsWith('/add')) {
-      _selectedIndex = 2;
-    } else if (location.startsWith('/profile')) {
-      _selectedIndex = 3;
-    }
+    final selectedIndex = _getSelectedIndex(location);
 
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
+        currentIndex: selectedIndex,
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(

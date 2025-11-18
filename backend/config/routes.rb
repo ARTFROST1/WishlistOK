@@ -39,7 +39,11 @@ Rails.application.routes.draw do
           end
         end
       end
-      
+
+      # Special routes for shared/public access (must be before resources :wishlists)
+      get 'wishlists/by_slug/:slug', to: 'wishlists#by_slug'
+      get 'wishlists/shared/:id', to: 'wishlists#shared'
+
       # Wishlist resources
       resources :wishlists do
         member do
@@ -66,10 +70,6 @@ Rails.application.routes.draw do
         # Direct access to claims
         resources :claims, only: [:index, :show]
       end
-      
-      # Special routes for shared/public access
-      get 'wishlists/by_slug/:slug', to: 'wishlists#by_slug'
-      get 'wishlists/shared/:id', to: 'wishlists#shared'
       
       # User claims
       get 'users/:user_id/claims', to: 'claims#user_claims'

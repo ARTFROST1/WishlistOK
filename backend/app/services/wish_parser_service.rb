@@ -43,7 +43,7 @@ class WishParserService
       { success: false, error: "Network error: #{e.message}" }
     rescue Nokogiri::Error => e
       { success: false, error: "Parse error: #{e.message}" }
-    rescue => e
+    rescue StandardError => e
       { success: false, error: "Unexpected error: #{e.message}" }
     end
   end

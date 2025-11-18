@@ -88,7 +88,7 @@ class _AuthInterceptor extends QueuedInterceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    // Handle 401 Unauthorized - clear tokens
+    // Handle 401 Unauthorized - clear tokens and redirect to auth
     if (err.response?.statusCode == 401) {
       await _storage.delete(key: AppConfig.jwtTokenKey);
       await _storage.delete(key: AppConfig.refreshTokenKey);

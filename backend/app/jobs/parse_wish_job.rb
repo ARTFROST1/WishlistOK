@@ -22,7 +22,7 @@ class ParseWishJob < ApplicationJob
     end
 
     result
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "ParseWishJob failed for URL: #{url}, Error: #{e.message}"
     raise e
   end

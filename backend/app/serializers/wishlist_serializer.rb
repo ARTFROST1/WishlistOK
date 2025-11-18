@@ -22,7 +22,7 @@ class WishlistSerializer
   end
   
   attribute :can_be_shared do |wishlist|
-    wishlist.visibility.in?(['public', 'link_only'])
+    wishlist.visibility&.to_sym&.in?([:public, :link_only])
   end
 
   # Associations
