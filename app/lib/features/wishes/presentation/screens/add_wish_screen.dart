@@ -311,6 +311,8 @@ class _AddWishScreenState extends State<AddWishScreen> with TickerProviderStateM
                           child: Image.network(
                             _parsedData!['imageUrl'] as String,
                             fit: BoxFit.cover,
+                            width: 80,
+                            height: 80,
                             errorBuilder: (context, error, stackTrace) =>
                                 const Icon(Icons.image, color: Colors.grey),
                           ),
